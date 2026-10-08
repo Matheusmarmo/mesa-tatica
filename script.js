@@ -39,6 +39,7 @@
       tokens: [],
       nextId: 1,
       view: { x: 40, y: 40, k: 1, fitted: false },
+      opts: { hideNpc: true },
     };
   }
 
@@ -57,6 +58,7 @@
       ea: num(t.ea, 0), eaMax: Math.max(0, num(t.eaMax, 0)),
       color: /^#[0-9a-f]{6}$/i.test(t.color || '') ? t.color : PALETTE[i % PALETTE.length],
       notes: String(t.notes ?? ''),
+      tipo: t.tipo === 'npc' ? 'npc' : 'jogador',
     };
   }
 
@@ -77,7 +79,8 @@
     const tokens = Array.isArray(raw.tokens) ? raw.tokens.map(normalizeToken) : [];
     const maxN = tokens.reduce((a, t) => Math.max(a, parseInt(String(t.id).replace(/\D/g, ''), 10) || 0), 0);
     const view = Object.assign({}, d.view, raw.view || {});
-    return { v: 1, map: m, tokens, nextId: Math.max(num(raw.nextId, 1), maxN + 1), view };
+    const opts = { hideNpc: !(raw.opts && raw.opts.hideNpc === false) };
+    return { v: 1, map: m, tokens, nextId: Math.max(num(raw.nextId, 1), maxN + 1), view, opts };
   }
 
   let state = defaultState();
@@ -261,6 +264,9 @@
     return first; // -1 se nenhuma
   }
 
+  // tokens NPC/vilão têm PV, EA e anotações escondidos quando a opção global está ligada
+  const isHidden = (t) => t.tipo === 'npc' && state.opts.hideNpc;
+
   function findToken(id) { return state.tokens.find((t) => String(t.id) === String(id)); }
 
   function renderToken(t) {
@@ -309,8 +315,8 @@
     lab.style.padding = `calc(1px * var(--inv, 1)) calc(8px * var(--inv, 1))`;
     const bars = el.querySelector('.bars');
     let b = '';
-    if (t.hpMax > 0) b += `<div class="bar hp"><i style="width:${clamp((t.hp / t.hpMax) * 100, 0, 100)}%"></i></div>`;
-    if (t.eaMax > 0) b += `<div class="bar ea"><i style="width:${clamp((t.ea / t.eaMax) * 100, 0, 100)}%"></i></div>`;
+    if (!isHidden(t) && t.hpMax > 0) b += `<div class="bar hp"><i style="width:${clamp((t.hp / t.hpMax) * 100, 0, 100)}%"></i></div>`;
+    if (!isHidden(t) && t.eaMax > 0) b += `<div class="bar ea"><i style="width:${clamp((t.ea / t.eaMax) * 100, 0, 100)}%"></i></div>`;
     bars.innerHTML = b;
   }
 
@@ -643,7 +649,7 @@
   /* ---------------------------------------------------------
      Modal do personagem
   --------------------------------------------------------- */
-  let curId = null, curSlot = 0;
+  let curId = null, curSlot = 0, modalReveal = false;
   const modal = $('modal');
 
   function openModal(id) {
@@ -651,10 +657,11 @@
     curId = id;
     const s = faceSlot(t);
     curSlot = s >= 0 ? s : 0;
+    modalReveal = false; // dados de NPC sempre abrem ocultos
     modal.hidden = false;
     renderModal();
   }
-  function closeModal() { modal.hidden = true; curId = null; }
+  function closeModal() { modal.hidden = true; curId = null; modalReveal = false; }
 
   function renderModal(onlyGallery = false) {
     const t = findToken(curId); if (!t) return;
@@ -693,6 +700,19 @@
     $('mSize').value = String(t.size);
     $('mColor').value = t.color;
     $('mNotes').value = t.notes;
+    $('mTipo').value = t.tipo;
+    applyPrivacy(t);
+  }
+
+  // mostra/esconde PV, EA e anotações no modal conforme o tipo do token e a opção global
+  function applyPrivacy(t) {
+    const npcMode = t.tipo === 'npc' && state.opts.hideNpc;
+    const hide = npcMode && !modalReveal;
+    $('mPrivacy').hidden = !npcMode;
+    $('mStatsBox').hidden = hide;
+    $('mNotesBox').hidden = hide;
+    $('mPrivacyText').textContent = hide ? '🔒 PV, EA e anotações ocultos para a mesa.' : '🔓 Dados do mestre visíveis (some ao fechar a ficha).';
+    $('mReveal').textContent = hide ? '👁 Mostrar (mestre)' : '🙈 Ocultar';
   }
 
   function touch(t) { renderToken(t); save(); }
@@ -713,6 +733,12 @@
     $('mSize').addEventListener('change', (e) => { const t = T(); if (!t) return; t.size = +e.target.value; touch(t); });
     $('mColor').addEventListener('input', (e) => { const t = T(); if (!t) return; t.color = e.target.value; touch(t); });
     $('mNotes').addEventListener('input', (e) => { const t = T(); if (!t) return; t.notes = e.target.value; save(); });
+    $('mTipo').addEventListener('change', (e) => {
+      const t = T(); if (!t) return;
+      t.tipo = e.target.value === 'npc' ? 'npc' : 'jogador';
+      modalReveal = false; touch(t); applyPrivacy(t);
+    });
+    $('mReveal').addEventListener('click', () => { const t = T(); if (!t) return; modalReveal = !modalReveal; applyPrivacy(t); });
 
     $('mStatus').addEventListener('click', (e) => {
       const b = e.target.closest('.st'); const t = T(); if (!b || !t) return;
@@ -821,7 +847,15 @@
     saveNow();
   }
 
+  function syncHideButton() {
+    const on = state.opts.hideNpc;
+    const b = $('btnHide');
+    b.classList.toggle('on', on);
+    b.textContent = on ? '🔒 NPCs ocultos' : '🔓 NPCs visíveis';
+  }
+
   function bootView() {
+    syncHideButton();
     const m = state.map;
     if (m.src) { mapImg.src = m.src; }
     else mapImg.removeAttribute('src');
@@ -891,6 +925,7 @@
         name: p.nome, photos: fotos, size: p.tamanho || 1,
         hp: p.pv ?? p.pvMax ?? 0, hpMax: p.pvMax ?? p.pv ?? 0, ea: p.ea ?? p.eaMax ?? 0, eaMax: p.eaMax ?? p.ea ?? 0,
         color: p.cor, notes: p.notas || '',
+        tipo: p.tipo || (p.grupo === 'Jogadores' ? 'jogador' : 'npc'),
       });
       selectToken(t.id);
       toast(`"${t.name}" adicionado ao mapa.`);
@@ -909,6 +944,13 @@
     });
     $('btnMap').addEventListener('click', () => togglePanel('mapPanel'));
     $('btnScene').addEventListener('click', () => togglePanel('scenePanel'));
+    $('btnHide').addEventListener('click', () => {
+      state.opts.hideNpc = !state.opts.hideNpc;
+      syncHideButton(); renderAllTokens();
+      const t = findToken(curId); if (!modal.hidden && t) { modalReveal = false; applyPrivacy(t); }
+      save();
+      toast(state.opts.hideNpc ? 'Dados de NPCs e vilões ocultos.' : 'Dados de NPCs e vilões visíveis para todos.');
+    });
     $('btnDice').addEventListener('click', () => togglePanel('dicePanel'));
     $('btnGrid').addEventListener('click', () => { state.map.gridOn = !state.map.gridOn; $('btnGrid').classList.toggle('on', state.map.gridOn); drawGrid(); save(); });
     $('btnRuler').addEventListener('click', () => setRulerMode(!rulerMode));
