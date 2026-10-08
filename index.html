@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Mesa Tática — A Guerra da Feitiçaria</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ BARRA SUPERIOR ============ -->
+  <header id="toolbar">
+    <div class="brand">⚔ <span>Mesa Tática</span></div>
+
+    <div class="group">
+      <button id="btnAddToken" class="primary" title="Adicionar um novo token no centro da tela">＋ Token</button>
+      <select id="libChars" title="Adicionar personagem da biblioteca (data/biblioteca.json)">
+        <option value="">📚 Biblioteca…</option>
+      </select>
+      <button id="btnArrange" title="Reorganiza todos os tokens em uma fileira no topo da tela visível">⇆ Organizar</button>
+    </div>
+
+    <div class="group">
+      <button id="btnMap" title="Configurações do mapa e da grade">🗺 Mapa</button>
+      <button id="btnGrid" class="toggle on" title="Mostrar/ocultar a grade (G)">▦ Grade</button>
+      <button id="btnRuler" class="toggle" title="Régua: arraste no mapa para medir (R)">📏 Régua</button>
+    </div>
+
+    <div class="group">
+      <button id="btnZoomOut" title="Diminuir zoom (−)">−</button>
+      <span id="zoomLabel" class="zoomlabel">100%</span>
+      <button id="btnZoomIn" title="Aumentar zoom (+)">＋</button>
+      <button id="btnFit" title="Ajustar o mapa à tela (0)">⤢ Ajustar</button>
+    </div>
+
+    <div class="group">
+      <button id="btnDice" class="toggle" title="Rolador de dados">🎲 Dados</button>
+      <button id="btnScene" title="Salvar, carregar e publicar a cena">💾 Cena</button>
+    </div>
+  </header>
+
+  <!-- ============ ÁREA DO MAPA ============ -->
+  <main id="viewport">
+    <div id="mapLayer" class="layer"><img id="mapImg" alt="" draggable="false"><div id="mapBlank"></div></div>
+    <canvas id="gridCanvas"></canvas>
+    <div id="tokenLayer" class="layer"></div>
+    <canvas id="fxCanvas"></canvas>
+    <div id="rulerLabel" hidden></div>
+    <div id="emptyHint" hidden>
+      Clique em <b>＋ Token</b> para criar um personagem.<br>
+      Arraste o mapa para mover • use a roda do mouse (ou pinça) para zoom.
+    </div>
+  </main>
+
+  <!-- ============ PAINEL: MAPA ============ -->
+  <aside id="mapPanel" class="panel" hidden>
+    <div class="panel-head"><h3>Mapa e grade</h3><button class="close" data-close="mapPanel">✕</button></div>
+    <div class="panel-body">
+      <label>Mapas da biblioteca
+        <select id="libMaps"><option value="">— escolher —</option></select>
+      </label>
+      <label>Imagem do mapa (caminho no repositório ou URL)
+        <input id="mapSrc" type="text" placeholder="img/mapas/meu-mapa.png">
+      </label>
+      <div class="row">
+        <button id="btnMapApply">Aplicar</button>
+        <label class="filebtn">Enviar arquivo…<input id="mapFile" type="file" accept="image/*"></label>
+        <button id="btnMapClear">Sem imagem</button>
+      </div>
+      <p class="hint">Dica: mapas enviados do seu computador ficam só no seu navegador. Para os jogadores verem, coloque a imagem na pasta <code>img/mapas</code> do repositório.</p>
+      <hr>
+      <div class="grid2">
+        <label>Tamanho da casa (px)<input id="cellSize" type="number" min="16" max="400" step="1"></label>
+        <label>Metros por casa<input id="metersPerCell" type="number" min="0.1" max="100" step="0.1"></label>
+        <label>Deslocar grade X (px)<input id="offX" type="number" step="1"></label>
+        <label>Deslocar grade Y (px)<input id="offY" type="number" step="1"></label>
+        <label>Colunas (sem imagem)<input id="cols" type="number" min="4" max="200" step="1"></label>
+        <label>Linhas (sem imagem)<input id="rows" type="number" min="4" max="200" step="1"></label>
+      </div>
+      <div class="grid2">
+        <label>Cor da grade<input id="gridColor" type="color"></label>
+        <label>Opacidade da grade<input id="gridOpacity" type="range" min="0.05" max="1" step="0.05"></label>
+      </div>
+      <label class="check"><input id="snap" type="checkbox"> Encaixar tokens na grade ao soltar</label>
+      <p class="hint">Importou um mapa que já vem com grade desenhada? Ajuste o <b>tamanho da casa</b> e o <b>deslocamento</b> até as linhas coincidirem (ou desligue a grade).</p>
+    </div>
+  </aside>
+
+  <!-- ============ PAINEL: CENA ============ -->
+  <aside id="scenePanel" class="panel" hidden>
+    <div class="panel-head"><h3>Cena</h3><button class="close" data-close="scenePanel">✕</button></div>
+    <div class="panel-body">
+      <p class="hint">Seus dados ficam salvos <b>neste navegador</b>. Para levar a cena a outro dispositivo ou publicá-la para os jogadores, use as opções abaixo.</p>
+      <button id="btnExport" class="wide">⬇ Exportar cena (arquivo .json)</button>
+      <label class="filebtn wide">⬆ Importar cena (.json)<input id="importFile" type="file" accept="application/json,.json"></label>
+      <hr>
+      <button id="btnLoadPublished" class="wide">🌐 Carregar a cena do mestre (data/cena.json)</button>
+      <p class="hint">Mestre: exporte a cena, renomeie o arquivo para <code>cena.json</code>, coloque em <code>data/</code> no repositório e faça commit. Jogadores clicam no botão acima para receber a cena atualizada.</p>
+      <hr>
+      <button id="btnReset" class="wide danger">🗑 Apagar tudo e recomeçar</button>
+    </div>
+  </aside>
+
+  <!-- ============ PAINEL: DADOS ============ -->
+  <aside id="dicePanel" class="panel dice" hidden>
+    <div class="panel-head"><h3>Dados</h3><button class="close" data-close="dicePanel">✕</button></div>
+    <div class="panel-body">
+      <div class="dicebtns">
+        <button data-die="1d4">d4</button><button data-die="1d6">d6</button><button data-die="1d8">d8</button>
+        <button data-die="1d10">d10</button><button data-die="1d12">d12</button><button data-die="1d20">d20</button><button data-die="1d100">d100</button>
+      </div>
+      <form id="diceForm" class="row">
+        <input id="diceExpr" type="text" placeholder="ex.: 4d20kh1+9 ou 3d10+9" autocomplete="off">
+        <button type="submit">Rolar</button>
+      </form>
+      <p class="hint"><code>kh1</code> mantém o maior, <code>kl1</code> o menor. Ex.: <code>3d20kh1+5</code>.</p>
+      <ul id="diceLog"></ul>
+    </div>
+  </aside>
+
+  <!-- ============ MODAL DO PERSONAGEM ============ -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="mName">
+      <button class="close modal-close" id="mClose" title="Fechar (Esc)">✕</button>
+
+      <section class="m-gallery">
+        <div class="m-preview">
+          <button class="nav prev" id="mPrev" title="Foto anterior">‹</button>
+          <img id="mBigImg" alt="" draggable="false">
+          <div id="mBigEmpty">Sem foto</div>
+          <button class="nav next" id="mNext" title="Próxima foto">›</button>
+          <span id="mSlotBadge" class="slotbadge"></span>
+        </div>
+        <div class="m-thumbs" id="mThumbs"></div>
+
+        <div class="m-imgctl">
+          <div class="slotname" id="mSlotName"></div>
+          <input id="mSlotSrc" type="text" placeholder="caminho (img/personagens/nome.png) ou URL">
+          <div class="row">
+            <label class="filebtn">Enviar arquivo…<input id="mSlotFile" type="file" accept="image/*"></label>
+            <button id="mSlotClear">Remover foto</button>
+          </div>
+          <button id="mUseOnMap" class="wide">Usar esta foto no token do mapa</button>
+        </div>
+      </section>
+
+      <section class="m-info">
+        <label>Nome
+          <input id="mName" type="text" maxlength="40">
+        </label>
+
+        <div class="statuslabel">Estado</div>
+        <div class="statusrow" id="mStatus">
+          <button data-status="bem" class="st bem">● Bem</button>
+          <button data-status="machucado" class="st machucado">▲ Machucado</button>
+          <button data-status="morto" class="st morto">✖ Morto</button>
+        </div>
+
+        <div class="grid2">
+          <label>PV atual<input id="mHp" type="number" step="1"></label>
+          <label>PV máx.<input id="mHpMax" type="number" step="1" min="0"></label>
+          <label>EA atual<input id="mEa" type="number" step="1"></label>
+          <label>EA máx.<input id="mEaMax" type="number" step="1" min="0"></label>
+          <label>Tamanho (casas)
+            <select id="mSize">
+              <option value="1">1 × 1</option><option value="2">2 × 2</option>
+              <option value="3">3 × 3</option><option value="4">4 × 4</option>
+            </select>
+          </label>
+          <label>Cor (sem foto)<input id="mColor" type="color"></label>
+        </div>
+
+        <label>Anotações (condições, técnicas, lembretes…)
+          <textarea id="mNotes" rows="4"></textarea>
+        </label>
+
+        <div class="row end">
+          <button id="mDuplicate">⧉ Duplicar</button>
+          <button id="mDelete" class="danger">🗑 Remover token</button>
+          <button id="mDone" class="primary">Fechar</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

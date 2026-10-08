@@ -1,0 +1,18 @@
+{
+  "mapas": [
+    { "nome": "Rua de exemplo", "src": "img/mapas/exemplo-rua.svg", "cell": 70, "metrosPorQuadrado": 1.5 }
+  ],
+  "personagens": [
+    {
+      "nome": "Feiticeiro de Exemplo",
+      "fotos": [
+        "img/personagens/exemplo-normal.svg",
+        "img/personagens/exemplo-acao.svg",
+        "img/personagens/exemplo-caido.svg"
+      ],
+      "pvMax": 100,
+      "eaMax": 40,
+      "tamanho": 1
+    }
+  ]
+}
