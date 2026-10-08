@@ -247,3 +247,12 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
   .panel { top: 52px; right: 6px; left: 6px; width: auto; max-width: none; }
   .panel.dice { left: 6px; }
 }
+
+/* ---------- ocultação de dados de NPCs ---------- */
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.privacy {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  background: #0f0e22; border: 1px dashed #5a52a8; border-radius: 10px; padding: 8px 10px; color: var(--muted); font-size: 12.5px;
+}
+.privacy button { padding: 4px 10px; font-size: 12.5px; }
+@media (max-width: 760px) { .grid3 { grid-template-columns: 1fr 1fr; } }
