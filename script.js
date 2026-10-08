@@ -612,7 +612,32 @@
       library.personagens = Array.isArray(j.personagens) ? j.personagens : [];
     } catch (e) { /* sem biblioteca: tudo bem (ex.: abrindo via file://) */ }
     library.mapas.forEach((mp, i) => $('libMaps').add(new Option(mp.nome || mp.src, i)));
-    library.personagens.forEach((p, i) => $('libChars').add(new Option(p.nome || 'Personagem', i)));
+    // personagens agrupados (campo "grupo" no JSON); sem grupo ficam soltos no menu
+    const sel = $('libChars'), groups = new Map();
+    library.personagens.forEach((p, i) => {
+      const g = p.grupo || '';
+      let parent = sel;
+      if (g) {
+        if (!groups.has(g)) { const og = document.createElement('optgroup'); og.label = g; sel.appendChild(og); groups.set(g, og); }
+        parent = groups.get(g);
+      }
+      parent.appendChild(new Option(p.nome || 'Personagem', i));
+    });
+  }
+
+  // testa se uma imagem existe (evita fotos quebradas quando o arquivo ainda não foi enviado)
+  function probeImage(src) {
+    // tenta o caminho informado e, se falhar, as outras extensões comuns (png, jpg, jpeg, webp)
+    const m = /^(.*)\.(png|jpe?g|webp)$/i.exec(src || '');
+    const candidates = m ? [src, ...['png', 'jpg', 'jpeg', 'webp'].map((x) => `${m[1]}.${x}`).filter((c) => c !== src)] : [src];
+    const tryOne = (c) => new Promise((resolve) => {
+      if (!c) return resolve('');
+      const im = new Image();
+      im.onload = () => resolve(c);
+      im.onerror = () => resolve('');
+      im.src = c;
+    });
+    return candidates.reduce((p, c) => p.then((found) => found || tryOne(c)), Promise.resolve(''));
   }
 
   /* ---------------------------------------------------------
@@ -856,11 +881,12 @@
 
   function bindToolbar() {
     $('btnAddToken').addEventListener('click', () => { const t = createToken(); selectToken(t.id); openModal(t.id); });
-    $('libChars').addEventListener('change', (e) => {
+    $('libChars').addEventListener('change', async (e) => {
       const i = e.target.value; e.target.value = '';
       if (i === '') return;
       const p = library.personagens[+i]; if (!p) return;
-      const fotos = Array.isArray(p.fotos) ? p.fotos : [];
+      const lista = Array.isArray(p.fotos) ? p.fotos : [];
+      const fotos = await Promise.all([0, 1, 2].map((k) => probeImage(lista[k] || '')));
       const t = createToken({
         name: p.nome, photos: fotos, size: p.tamanho || 1,
         hp: p.pv ?? p.pvMax ?? 0, hpMax: p.pvMax ?? p.pv ?? 0, ea: p.ea ?? p.eaMax ?? 0, eaMax: p.eaMax ?? p.ea ?? 0,
