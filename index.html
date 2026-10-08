@@ -34,6 +34,7 @@
     </div>
 
     <div class="group">
+      <button id="btnHide" class="toggle on" title="Liga/desliga a ocultação de PV, EA e anotações dos tokens do tipo NPC/vilão (jogadores nunca são ocultados)">🔒 NPCs ocultos</button>
       <button id="btnDice" class="toggle" title="Rolador de dados">🎲 Dados</button>
       <button id="btnScene" title="Salvar, carregar e publicar a cena">💾 Cena</button>
     </div>
@@ -156,11 +157,13 @@
           <button data-status="morto" class="st morto">✖ Morto</button>
         </div>
 
-        <div class="grid2">
-          <label>PV atual<input id="mHp" type="number" step="1"></label>
-          <label>PV máx.<input id="mHpMax" type="number" step="1" min="0"></label>
-          <label>EA atual<input id="mEa" type="number" step="1"></label>
-          <label>EA máx.<input id="mEaMax" type="number" step="1" min="0"></label>
+        <div class="grid3">
+          <label>Tipo
+            <select id="mTipo">
+              <option value="jogador">Jogador</option>
+              <option value="npc">NPC / vilão</option>
+            </select>
+          </label>
           <label>Tamanho (casas)
             <select id="mSize">
               <option value="1">1 × 1</option><option value="2">2 × 2</option>
@@ -170,7 +173,19 @@
           <label>Cor (sem foto)<input id="mColor" type="color"></label>
         </div>
 
-        <label>Anotações (condições, técnicas, lembretes…)
+        <div id="mPrivacy" class="privacy" hidden>
+          <span id="mPrivacyText"></span>
+          <button id="mReveal" type="button"></button>
+        </div>
+
+        <div id="mStatsBox" class="grid2">
+          <label>PV atual<input id="mHp" type="number" step="1"></label>
+          <label>PV máx.<input id="mHpMax" type="number" step="1" min="0"></label>
+          <label>EA atual<input id="mEa" type="number" step="1"></label>
+          <label>EA máx.<input id="mEaMax" type="number" step="1" min="0"></label>
+        </div>
+
+        <label id="mNotesBox">Anotações (condições, técnicas, lembretes…)
           <textarea id="mNotes" rows="4"></textarea>
         </label>
 
