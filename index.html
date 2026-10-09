@@ -43,6 +43,8 @@
   <!-- ============ ÁREA DO MAPA ============ -->
   <main id="viewport">
     <div id="mapLayer" class="layer"><img id="mapImg" alt="" draggable="false"><div id="mapBlank"></div></div>
+    <div id="objLayer" class="layer"></div>
+    <div id="domLayer" class="layer"></div>
     <canvas id="gridCanvas"></canvas>
     <div id="tokenLayer" class="layer"></div>
     <canvas id="fxCanvas"></canvas>
@@ -55,8 +57,11 @@
 
   <!-- ============ PAINEL: MAPA ============ -->
   <aside id="mapPanel" class="panel" hidden>
-    <div class="panel-head"><h3>Mapa e grade</h3><button class="close" data-close="mapPanel">✕</button></div>
+    <div class="panel-head"><h3>Mapa</h3><button class="close" data-close="mapPanel">✕</button></div>
     <div class="panel-body">
+      <details class="sec" id="secMapa" open>
+      <summary>🗺 Mapa e grade</summary>
+      <div class="sec-body">
       <label>Mapas da biblioteca
         <select id="libMaps"><option value="">— escolher —</option></select>
       </label>
@@ -84,6 +89,95 @@
       </div>
       <label class="check"><input id="snap" type="checkbox"> Encaixar tokens na grade ao soltar</label>
       <p class="hint">Importou um mapa que já vem com grade desenhada? Ajuste o <b>tamanho da casa</b> e o <b>deslocamento</b> até as linhas coincidirem (ou desligue a grade).</p>
+      </div>
+      </details>
+
+      <!-- ===== DOMÍNIOS ===== -->
+      <details class="sec" id="secDom">
+      <summary>🌀 Domínios</summary>
+      <div class="sec-body">
+        <div class="row">
+          <button id="btnExpd" class="expd" title="Cena de Expansão de Domínio para todos verem, com áudio, e depois o círculo escuro no mapa">EXPD<small>Expansão de Domínio</small></button>
+          <button id="btnDomSimples" class="simples" title="Cria um anel de Domínio Simples (sem cena)">Domínio Simples</button>
+        </div>
+        <label>Centro do domínio
+          <select id="domCenter"><option value="">📍 Centro da tela</option></select>
+        </label>
+        <p class="hint">Escolhendo um token, a <b>Expansão</b> nasce na posição dele e o <b>Domínio Simples</b> passa a <b>seguir</b> o token. Domínios sem token mostram um ✥ na etiqueta do alto do círculo: arraste por ali para mover.</p>
+        <div class="grid2">
+          <label>Raio da Expansão (casas)<input id="domR" type="number" min="0.5" max="60" step="0.5"></label>
+          <label>Raio do Domínio Simples (casas)<input id="domRs" type="number" min="0.5" max="60" step="0.5"></label>
+        </div>
+        <p class="hint" id="domMeters"></p>
+        <label>Nome do domínio (opcional, aparece sob o título e no círculo)
+          <input id="domName" type="text" maxlength="60" placeholder="ex.: Santuário Malevolente">
+        </label>
+        <label>Áudio (caminho no repositório ou link direto para .mp3 / .ogg / .wav)
+          <input id="domAudio" type="text" placeholder="audio/exemplo-dominio.wav">
+        </label>
+        <div class="row">
+          <button id="btnDomAudioTest">🔊 Testar áudio</button>
+        </div>
+        <div class="grid2">
+          <label>Volume<input id="domVol" type="range" min="0" max="1" step="0.05"></label>
+          <label>Duração da cena (s)<input id="domDur" type="number" min="2" max="20" step="0.5"></label>
+        </div>
+        <label>Escuridão do círculo<input id="domOp" type="range" min="0.3" max="0.95" step="0.05"></label>
+        <label class="check"><input id="domNoFx" type="checkbox"> Só o círculo, sem a cena</label>
+        <ul id="domList" class="mini-list"></ul>
+        <button id="btnDomClear" class="wide danger">Encerrar todos os domínios</button>
+      </div>
+      </details>
+
+      <!-- ===== OBJETOS ===== -->
+      <details class="sec" id="secObj">
+      <summary>🧱 Objetos</summary>
+      <div class="sec-body">
+        <p class="hint">Objetos ficam <b>abaixo dos tokens</b>. Arraste para mover, clique para editar (tamanho, rotação, cor, travar). Objetos travados deixam de ser clicáveis e são editados pela lista abaixo.</p>
+        <label>Da biblioteca
+          <select id="libObjs"><option value="">— escolher —</option></select>
+        </label>
+        <div class="row">
+          <button id="btnObjRect">▭ Retângulo</button>
+          <button id="btnObjCircle">◯ Círculo</button>
+          <label class="filebtn">Enviar imagem…<input id="objFile" type="file" accept="image/*"></label>
+        </div>
+        <div class="row nowrap">
+          <input id="objSrc" type="text" placeholder="img/objetos/caixa.png">
+          <button id="btnObjAdd">Adicionar</button>
+        </div>
+        <ul id="objList" class="mini-list"></ul>
+      </div>
+      </details>
+    </div>
+  </aside>
+
+  <!-- ============ PAINEL: EDITAR OBJETO ============ -->
+  <aside id="objPanel" class="panel objp" hidden>
+    <div class="panel-head"><h3>Objeto</h3><button class="close" id="oClose">✕</button></div>
+    <div class="panel-body">
+      <label>Nome<input id="oName" type="text" maxlength="40"></label>
+      <div class="grid2">
+        <label>Largura (casas)<input id="oW" type="number" min="0.25" max="60" step="0.25"></label>
+        <label>Altura (casas)<input id="oH" type="number" min="0.25" max="60" step="0.25"></label>
+      </div>
+      <label>Rotação: <b id="oRotVal">0°</b>
+        <input id="oRot" type="range" min="0" max="359" step="1">
+      </label>
+      <div class="row">
+        <button id="oRotL" title="Girar 15° para a esquerda">↺ −15°</button>
+        <button id="oRot90" title="Girar 90°">⟳ 90°</button>
+        <button id="oRotR" title="Girar 15° para a direita">↻ +15°</button>
+      </div>
+      <label id="oColorRow">Cor<input id="oColor" type="color"></label>
+      <label>Opacidade<input id="oOp" type="range" min="0.1" max="1" step="0.05"></label>
+      <label class="check"><input id="oLock" type="checkbox"> Travar (não arrastar nem clicar no mapa)</label>
+      <div class="row">
+        <button id="oFront" title="Trazer para a frente (entre os objetos)">↑ Frente</button>
+        <button id="oBack" title="Enviar para trás (entre os objetos)">↓ Trás</button>
+        <button id="oDup">⧉ Duplicar</button>
+      </div>
+      <button id="oDel" class="wide danger">🗑 Remover objeto</button>
     </div>
   </aside>
 
@@ -196,6 +290,14 @@
         </div>
       </section>
     </div>
+  </div>
+
+  <!-- ============ CENA DA EXPANSÃO DE DOMÍNIO ============ -->
+  <div id="domFx" hidden title="Clique para pular">
+    <div class="fxRings"><i></i><i></i><i></i></div>
+    <div class="fxFlash"></div>
+    <div class="domTitle">EXPANSÃO DE DOMÍNIO</div>
+    <div class="domSub" id="domFxSub"></div>
   </div>
 
   <div id="toast" hidden></div>
