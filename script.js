@@ -37,9 +37,52 @@
         gridOn: true, gridColor: '#ffffff', gridOpacity: 0.25, snap: true,
       },
       tokens: [],
+      objects: [],
+      domains: [],
+      dom: defaultDomCfg(),
       nextId: 1,
       view: { x: 40, y: 40, k: 1, fitted: false },
       opts: { hideNpc: true },
+    };
+  }
+
+  // configuração global dos domínios (menu Mapa → Domínios)
+  function defaultDomCfg() {
+    return { r: 6, rs: 2, name: '', audio: 'audio/exemplo-dominio.wav', vol: 0.8, dur: 4, op: 0.82, noFx: false };
+  }
+  function normalizeDomCfg(c) {
+    const d = defaultDomCfg();
+    if (!c || typeof c !== 'object') return d;
+    return {
+      r: clamp(num(c.r, d.r), 0.5, 60), rs: clamp(num(c.rs, d.rs), 0.5, 60),
+      name: String(c.name ?? '').slice(0, 60),
+      audio: typeof c.audio === 'string' ? c.audio : d.audio,
+      vol: clamp(num(c.vol, d.vol), 0, 1), dur: clamp(num(c.dur, d.dur), 2, 20),
+      op: clamp(num(c.op, d.op), 0.3, 0.95), noFx: c.noFx === true,
+    };
+  }
+  function normalizeDomain(d, i = 0) {
+    return {
+      id: d.id ?? ('d' + Date.now() + i),
+      kind: d.kind === 'simples' ? 'simples' : 'expansao',
+      gx: num(d.gx, 0), gy: num(d.gy, 0),
+      r: clamp(num(d.r, 4), 0.5, 60),
+      tokenId: d.tokenId ? String(d.tokenId) : null,
+      name: String(d.name ?? '').slice(0, 60),
+    };
+  }
+  function normalizeObj(o, i = 0) {
+    const kind = ['img', 'rect', 'circle'].includes(o.kind) ? o.kind : 'img';
+    const rot = ((num(o.rot, 0) % 360) + 360) % 360;
+    return {
+      id: o.id ?? ('o' + Date.now() + i),
+      kind,
+      name: String(o.name ?? 'Objeto').slice(0, 40),
+      src: typeof o.src === 'string' ? o.src : '',
+      color: /^#[0-9a-f]{6}$/i.test(o.color || '') ? o.color : '#6b7280',
+      gx: num(o.gx, 0), gy: num(o.gy, 0),
+      w: clamp(num(o.w, 1), 0.25, 60), h: clamp(num(o.h, 1), 0.25, 60),
+      rot, op: clamp(num(o.op, 1), 0.1, 1), locked: o.locked === true,
     };
   }
 
@@ -77,10 +120,13 @@
     m.gridOn = m.gridOn !== false; m.snap = m.snap !== false;
     if (!/^#[0-9a-f]{6}$/i.test(m.gridColor || '')) m.gridColor = '#ffffff';
     const tokens = Array.isArray(raw.tokens) ? raw.tokens.map(normalizeToken) : [];
-    const maxN = tokens.reduce((a, t) => Math.max(a, parseInt(String(t.id).replace(/\D/g, ''), 10) || 0), 0);
+    const objects = Array.isArray(raw.objects) ? raw.objects.map(normalizeObj) : [];
+    const domains = Array.isArray(raw.domains) ? raw.domains.map(normalizeDomain) : [];
+    const idNum = (x) => parseInt(String(x.id).replace(/\D/g, ''), 10) || 0;
+    const maxN = [...tokens, ...objects, ...domains].reduce((a, x) => Math.max(a, idNum(x)), 0);
     const view = Object.assign({}, d.view, raw.view || {});
     const opts = { hideNpc: !(raw.opts && raw.opts.hideNpc === false) };
-    return { v: 1, map: m, tokens, nextId: Math.max(num(raw.nextId, 1), maxN + 1), view, opts };
+    return { v: 1, map: m, tokens, objects, domains, dom: normalizeDomCfg(raw.dom), nextId: Math.max(num(raw.nextId, 1), maxN + 1), view, opts };
   }
 
   let state = defaultState();
@@ -113,6 +159,8 @@
   const viewport = $('viewport');
   const mapLayer = $('mapLayer');
   const tokenLayer = $('tokenLayer');
+  const objLayer = $('objLayer');
+  const domLayer = $('domLayer');
   const mapImg = $('mapImg');
   const mapBlank = $('mapBlank');
   const gridCanvas = $('gridCanvas');
@@ -140,7 +188,9 @@
     const tf = `translate(${v.x}px, ${v.y}px) scale(${v.k})`;
     mapLayer.style.transform = tf;
     tokenLayer.style.transform = tf;
-    tokenLayer.style.setProperty('--inv', String(1 / v.k));
+    objLayer.style.transform = tf;
+    domLayer.style.transform = tf;
+    for (const L of [tokenLayer, objLayer, domLayer]) L.style.setProperty('--inv', String(1 / v.k));
     $('zoomLabel').textContent = Math.round(v.k * 100) + '%';
     drawGrid();
     drawFx();
@@ -329,6 +379,10 @@
     for (const [id, el] of tokenEls) if (!ids.has(id)) { el.remove(); tokenEls.delete(id); }
     state.tokens.forEach((t) => { renderToken(t); tokenLayer.appendChild(tokenEls.get(t.id)); });
     $('emptyHint').hidden = state.tokens.length > 0;
+    // objetos e domínios dependem do tamanho da casa e da posição dos tokens: mantêm tudo em sincronia
+    renderAllObjs();
+    renderDomains();
+    if (!$('mapPanel').hidden) refreshDomCenter();
   }
 
   function snapToken(t) {
@@ -396,13 +450,36 @@
       const t = findToken(tokEl.dataset.id);
       if (!t) return;
       selectToken(t.id);
-      dragState = { id: t.id, sx: p.x, sy: p.y, gx0: t.gx, gy0: t.gy, moved: false, el: tokEl };
+      dragState = { kind: 'token', id: t.id, sx: p.x, sy: p.y, gx0: t.gx, gy0: t.gy, moved: false, el: tokEl };
       mode = 'drag';
       return;
     }
 
+    // etiqueta ✥ de um domínio livre (sem token): arrastar move o círculo
+    const handleEl = e.target.closest('.dom.free .dlabel');
+    if (handleEl && e.button === 0) {
+      const dom = state.domains.find((x) => String(x.id) === handleEl.parentElement.dataset.id);
+      if (dom) {
+        dragState = { kind: 'dom', id: dom.id, sx: p.x, sy: p.y, gx0: dom.gx, gy0: dom.gy, moved: false, el: handleEl.parentElement };
+        mode = 'drag';
+        return;
+      }
+    }
+
+    // objeto (não travado)
+    const objEl = e.target.closest('.obj');
+    if (objEl && e.button === 0) {
+      const o = findObj(objEl.dataset.id);
+      if (o && !o.locked) {
+        selectObj(o.id, false);
+        dragState = { kind: 'obj', id: o.id, sx: p.x, sy: p.y, gx0: o.gx, gy0: o.gy, moved: false, el: objEl };
+        mode = 'drag';
+        return;
+      }
+    }
+
     if (e.button === 0 || e.button === 1 || e.button === 2 || e.pointerType !== 'mouse') {
-      if (!tokEl) selectToken(null);
+      if (!tokEl) { selectToken(null); selectObj(null); }
       panStart = { sx: p.x, sy: p.y, vx: state.view.x, vy: state.view.y };
       mode = 'pan';
       viewport.classList.add('panning');
@@ -437,11 +514,24 @@
       const dx = p.x - dragState.sx, dy = p.y - dragState.sy;
       if (!dragState.moved && Math.hypot(dx, dy) < 5) return;
       if (!dragState.moved) { dragState.moved = true; dragState.el.classList.add('dragging'); }
-      const t = findToken(dragState.id);
-      t.gx = dragState.gx0 + dx / state.view.k / state.map.cell;
-      t.gy = dragState.gy0 + dy / state.view.k / state.map.cell;
-      const pos = gridToWorld(t.gx, t.gy);
-      dragState.el.style.left = pos.x + 'px'; dragState.el.style.top = pos.y + 'px';
+      const ngx = dragState.gx0 + dx / state.view.k / state.map.cell;
+      const ngy = dragState.gy0 + dy / state.view.k / state.map.cell;
+      if (dragState.kind === 'token') {
+        const t = findToken(dragState.id);
+        t.gx = ngx; t.gy = ngy;
+        const pos = gridToWorld(t.gx, t.gy);
+        dragState.el.style.left = pos.x + 'px'; dragState.el.style.top = pos.y + 'px';
+        renderDomains(); // domínios presos ao token acompanham
+      } else if (dragState.kind === 'obj') {
+        const o = findObj(dragState.id);
+        o.gx = ngx; o.gy = ngy;
+        const pos = gridToWorld(o.gx, o.gy);
+        dragState.el.style.left = pos.x + 'px'; dragState.el.style.top = pos.y + 'px';
+      } else if (dragState.kind === 'dom') {
+        const dom = state.domains.find((x) => x.id === dragState.id);
+        dom.gx = ngx; dom.gy = ngy;
+        renderDomains();
+      }
     } else if (mode === 'pan' && panStart) {
       state.view.x = panStart.vx + (p.x - panStart.sx);
       state.view.y = panStart.vy + (p.y - panStart.sy);
@@ -459,16 +549,32 @@
     try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
 
     if (mode === 'drag' && dragState) {
-      const t = findToken(dragState.id);
-      const el = dragState.el;
-      el.classList.remove('dragging');
-      if (dragState.moved && t) {
-        snapToken(t);
-        // traz para a frente
-        state.tokens = state.tokens.filter((o) => o !== t).concat(t);
-        renderAllTokens(); save();
-      } else if (t && e.type === 'pointerup') {
-        openModal(t.id);
+      const ds = dragState;
+      ds.el.classList.remove('dragging');
+      if (ds.kind === 'token') {
+        const t = findToken(ds.id);
+        if (ds.moved && t) {
+          snapToken(t);
+          // traz para a frente
+          state.tokens = state.tokens.filter((o) => o !== t).concat(t);
+          renderAllTokens(); save();
+        } else if (t && e.type === 'pointerup') {
+          openModal(t.id);
+        }
+      } else if (ds.kind === 'obj') {
+        const o = findObj(ds.id);
+        if (o && ds.moved) {
+          snapObj(o); renderObj(o); save();
+          if (!$('objPanel').hidden) fillObjPanel();
+        } else if (o && e.type === 'pointerup') {
+          selectObj(o.id, true);
+        }
+      } else if (ds.kind === 'dom') {
+        const dom = state.domains.find((x) => x.id === ds.id);
+        if (dom && ds.moved) {
+          if (state.map.snap) { dom.gx = Math.round(dom.gx * 2) / 2; dom.gy = Math.round(dom.gy * 2) / 2; }
+          renderDomains(); save();
+        }
       }
       dragState = null;
     }
@@ -481,8 +587,10 @@
 
   function cancelCurrent() {
     if (dragState) {
-      const t = findToken(dragState.id);
-      if (t) { t.gx = dragState.gx0; t.gy = dragState.gy0; renderToken(t); }
+      const k = dragState.kind;
+      const it = k === 'token' ? findToken(dragState.id) : k === 'obj' ? findObj(dragState.id) : state.domains.find((x) => x.id === dragState.id);
+      if (it) { it.gx = dragState.gx0; it.gy = dragState.gy0; }
+      if (k === 'token' && it) renderToken(it); else if (k === 'obj' && it) renderObj(it); else renderDomains();
       dragState.el.classList.remove('dragging'); dragState = null;
     }
     panStart = null; viewport.classList.remove('panning');
@@ -568,13 +676,14 @@
     $('btnGrid').classList.toggle('on', m.gridOn);
     const noImg = !(m.src && m.natW > 0);
     $('cols').disabled = !noImg; $('rows').disabled = !noImg;
+    syncDomPanel();
   }
 
   function bindMapPanel() {
     const M = () => state.map;
     const upd = () => { applyMapLayout(); renderAllTokens(); drawGrid(); drawFx(); save(); };
     $('cellSize').addEventListener('input', (e) => { M().cell = clamp(num(e.target.value, 70), 16, 400); upd(); });
-    $('metersPerCell').addEventListener('input', (e) => { M().mpc = clamp(num(e.target.value, 1.5), 0.1, 100); save(); });
+    $('metersPerCell').addEventListener('input', (e) => { M().mpc = clamp(num(e.target.value, 1.5), 0.1, 100); updDomMeters(); save(); });
     $('offX').addEventListener('input', (e) => { M().offX = num(e.target.value); upd(); });
     $('offY').addEventListener('input', (e) => { M().offY = num(e.target.value); upd(); });
     $('cols').addEventListener('input', (e) => { M().cols = clamp(Math.round(num(e.target.value, 30)), 4, 200); upd(); });
@@ -608,7 +717,7 @@
   /* ---------------------------------------------------------
      Biblioteca (data/biblioteca.json)
   --------------------------------------------------------- */
-  let library = { mapas: [], personagens: [] };
+  let library = { mapas: [], personagens: [], objetos: [] };
   async function loadLibrary() {
     try {
       const r = await fetch('data/biblioteca.json', { cache: 'no-store' });
@@ -616,8 +725,10 @@
       const j = await r.json();
       library.mapas = Array.isArray(j.mapas) ? j.mapas : [];
       library.personagens = Array.isArray(j.personagens) ? j.personagens : [];
+      library.objetos = Array.isArray(j.objetos) ? j.objetos : [];
     } catch (e) { /* sem biblioteca: tudo bem (ex.: abrindo via file://) */ }
     library.mapas.forEach((mp, i) => $('libMaps').add(new Option(mp.nome || mp.src, i)));
+    library.objetos.forEach((ob, i) => $('libObjs').add(new Option(ob.nome || ob.src, i)));
     // personagens agrupados (campo "grupo" no JSON); sem grupo ficam soltos no menu
     const sel = $('libChars'), groups = new Map();
     library.personagens.forEach((p, i) => {
@@ -782,9 +893,414 @@
   }
 
   function removeToken(id) {
+    const t = findToken(id);
+    if (t) { // domínios presos a esse token ficam parados onde estavam
+      for (const d of state.domains) if (String(d.tokenId) === String(id)) { d.gx = t.gx + t.size / 2; d.gy = t.gy + t.size / 2; d.tokenId = null; }
+    }
     state.tokens = state.tokens.filter((t) => String(t.id) !== String(id));
     if (selectedId === id) selectedId = null;
-    renderAllTokens(); save();
+    renderAllTokens(); save(); refreshDomList();
+  }
+
+  /* ---------------------------------------------------------
+     Objetos (props no mapa: imagens, retângulos, círculos)
+  --------------------------------------------------------- */
+  const objEls = new Map();
+  let selectedObjId = null;
+  const findObj = (id) => state.objects.find((o) => String(o.id) === String(id));
+  const fmtN = (n) => n.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+
+  function renderObj(o) {
+    let el = objEls.get(o.id);
+    if (!el) {
+      el = document.createElement('div');
+      el.dataset.id = o.id;
+      objEls.set(o.id, el);
+      objLayer.appendChild(el);
+    }
+    const c = state.map.cell;
+    const pos = gridToWorld(o.gx, o.gy);
+    el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px';
+    el.style.width = o.w * c + 'px'; el.style.height = o.h * c + 'px';
+    el.style.transform = `rotate(${o.rot}deg)`;
+    el.style.opacity = o.op;
+    el.title = o.name;
+    el.className = 'obj k-' + o.kind + (o.locked ? ' locked' : '') + (o.id === selectedObjId ? ' selected' : '') + (el.dataset.broken ? ' broken' : '');
+    const key = o.kind + '|' + o.src;
+    if (el.dataset.key !== key) {
+      el.dataset.key = key; delete el.dataset.broken; el.textContent = '';
+      if (o.kind === 'img') {
+        const img = new Image();
+        img.draggable = false; img.alt = '';
+        img.onerror = () => { img.remove(); el.dataset.broken = '1'; el.classList.add('broken'); el.textContent = '?'; };
+        img.src = o.src;
+        el.appendChild(img);
+      }
+    }
+    el.style.background = o.kind === 'img' ? '' : o.color;
+  }
+
+  function renderAllObjs() {
+    const ids = new Set(state.objects.map((o) => o.id));
+    for (const [id, el] of objEls) if (!ids.has(id)) { el.remove(); objEls.delete(id); }
+    state.objects.forEach((o) => { renderObj(o); objLayer.appendChild(objEls.get(o.id)); }); // a ordem do array é a ordem de empilhamento
+  }
+
+  // encaixa pela caixa visível (considera 90°/270°), para o objeto alinhar com as linhas da grade
+  function snapObj(o) {
+    if (!state.map.snap) return;
+    const r = ((o.rot % 180) + 180) % 180;
+    const vert = Math.abs(r - 90) < 1;
+    const sw = vert ? o.h : o.w, sh = vert ? o.w : o.h;
+    const cx = o.gx + o.w / 2, cy = o.gy + o.h / 2;
+    const left = Math.round(cx - sw / 2), top = Math.round(cy - sh / 2);
+    o.gx = left + sw / 2 - o.w / 2; o.gy = top + sh / 2 - o.h / 2;
+  }
+
+  function selectObj(id, openPanel = false) {
+    selectedObjId = id;
+    for (const o of state.objects) { const el = objEls.get(o.id); if (el) el.classList.toggle('selected', o.id === id); }
+    if (!id) { $('objPanel').hidden = true; refreshObjList(); return; }
+    if (openPanel) {
+      if (window.innerWidth <= 760) togglePanel('mapPanel', false);
+      $('dicePanel').hidden = true; $('btnDice').classList.remove('on');
+      $('objPanel').hidden = false; fillObjPanel();
+    }
+    refreshObjList();
+  }
+
+  function fillObjPanel() {
+    const o = findObj(selectedObjId); if (!o) return;
+    $('oName').value = o.name;
+    $('oW').value = o.w; $('oH').value = o.h;
+    $('oRot').value = Math.round(o.rot); $('oRotVal').textContent = Math.round(o.rot) + '°';
+    $('oColor').value = o.color; $('oColorRow').hidden = o.kind === 'img';
+    $('oOp').value = o.op; $('oLock').checked = o.locked;
+  }
+
+  function refreshObjList() {
+    const ul = $('objList'); ul.innerHTML = '';
+    if (!state.objects.length) { ul.innerHTML = '<li class="empty">Nenhum objeto no mapa.</li>'; return; }
+    state.objects.forEach((o) => {
+      const li = document.createElement('li');
+      if (o.id === selectedObjId) li.className = 'sel';
+      const b = document.createElement('button');
+      b.className = 'nm'; b.title = 'Selecionar e centralizar';
+      b.textContent = `${o.locked ? '🔒 ' : ''}${o.name} · ${fmtN(o.w)}×${fmtN(o.h)}`;
+      b.addEventListener('click', () => { selectObj(o.id, true); centerOnGrid(o.gx + o.w / 2, o.gy + o.h / 2); });
+      li.appendChild(b);
+      ul.appendChild(li);
+    });
+  }
+
+  function centerOnGrid(gx, gy) {
+    const p = gridToWorld(gx, gy), v = state.view;
+    v.x = viewport.clientWidth / 2 - p.x * v.k; v.y = viewport.clientHeight / 2 - p.y * v.k;
+    applyView();
+  }
+
+  function imageAspect(src) {
+    return new Promise((resolve) => {
+      const im = new Image();
+      im.onload = () => resolve({ ok: true, w: im.naturalWidth || 1, h: im.naturalHeight || 1 });
+      im.onerror = () => resolve({ ok: false, w: 1, h: 1 });
+      im.src = src;
+    });
+  }
+
+  function addObject(base) {
+    const c = screenToWorld(viewport.clientWidth / 2, viewport.clientHeight / 2);
+    const g = worldToGrid(c.x, c.y);
+    const o = normalizeObj(Object.assign({ id: 'o' + state.nextId++, name: 'Objeto' }, base));
+    o.gx = g.gx - o.w / 2; o.gy = g.gy - o.h / 2;
+    if (state.map.snap) snapObj(o); else { o.gx = Math.round(o.gx * 2) / 2; o.gy = Math.round(o.gy * 2) / 2; }
+    for (let g = 0; g < 30 && state.objects.some((x) => Math.abs(x.gx - o.gx) < 0.01 && Math.abs(x.gy - o.gy) < 0.01); g++) { o.gx += 1; o.gy += 1; } // não nasce exatamente em cima de outro
+    state.objects.push(o);
+    renderAllObjs(); save();
+    selectObj(o.id, true);
+    return o;
+  }
+
+  // imagem com proporção natural: o lado maior ocupa `maxCasas` casas
+  async function addImageObject(src, name, w, h) {
+    if (!w || !h) {
+      const a = await imageAspect(src);
+      if (!a.ok) { toast('Não consegui carregar essa imagem: ' + (src.length > 50 ? src.slice(0, 47) + '…' : src), 5000); return null; }
+      const long = 2;
+      if (a.w >= a.h) { w = long; h = Math.max(0.25, +(long * a.h / a.w).toFixed(2)); } else { h = long; w = Math.max(0.25, +(long * a.w / a.h).toFixed(2)); }
+    }
+    return addObject({ kind: 'img', src, name, w, h });
+  }
+
+  function bindObjects() {
+    const O = () => findObj(selectedObjId);
+    const upd = (o, full = false) => { renderObj(o); save(); if (full) refreshObjList(); };
+
+    $('btnObjRect').addEventListener('click', () => addObject({ kind: 'rect', name: 'Parede', w: 3, h: 1, color: '#6b7280' }));
+    $('btnObjCircle').addEventListener('click', () => addObject({ kind: 'circle', name: 'Círculo', w: 2, h: 2, color: '#8a5a2b' }));
+    $('objFile').addEventListener('change', async (e) => {
+      const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+      try {
+        const data = await fileToDataURL(f, 900, 'image/webp', 0.88);
+        await addImageObject(data, f.name.replace(/\.[^.]+$/, '').slice(0, 40) || 'Imagem');
+      } catch (err) { toast('Não foi possível ler essa imagem.'); }
+    });
+    const addByPath = async () => {
+      const v = $('objSrc').value.trim();
+      if (!v) { toast('Digite o caminho da imagem (ex.: img/objetos/caixa.png).'); return; }
+      const nome = decodeURIComponent(v.split('/').pop().replace(/\.[^.]+$/, '')) || 'Objeto';
+      if (await addImageObject(v, nome)) $('objSrc').value = '';
+    };
+    $('btnObjAdd').addEventListener('click', addByPath);
+    $('objSrc').addEventListener('keydown', (e) => { if (e.key === 'Enter') addByPath(); });
+    $('libObjs').addEventListener('change', async (e) => {
+      const i = e.target.value; e.target.value = ''; if (i === '') return;
+      const it = library.objetos[+i]; if (!it) return;
+      await addImageObject(it.src, it.nome || 'Objeto', num(it.largura, 0) || 0, num(it.altura, 0) || 0);
+    });
+
+    $('oClose').addEventListener('click', () => selectObj(null));
+    $('oName').addEventListener('input', (e) => { const o = O(); if (!o) return; o.name = e.target.value || 'Objeto'; upd(o, true); });
+    $('oW').addEventListener('input', (e) => { const o = O(); if (!o) return; o.w = clamp(num(e.target.value, o.w), 0.25, 60); upd(o, true); });
+    $('oH').addEventListener('input', (e) => { const o = O(); if (!o) return; o.h = clamp(num(e.target.value, o.h), 0.25, 60); upd(o, true); });
+    const setRot = (o, deg) => { o.rot = ((deg % 360) + 360) % 360; $('oRot').value = Math.round(o.rot); $('oRotVal').textContent = Math.round(o.rot) + '°'; upd(o); };
+    $('oRot').addEventListener('input', (e) => { const o = O(); if (!o) return; setRot(o, num(e.target.value)); });
+    $('oRotL').addEventListener('click', () => { const o = O(); if (o) setRot(o, o.rot - 15); });
+    $('oRotR').addEventListener('click', () => { const o = O(); if (o) setRot(o, o.rot + 15); });
+    $('oRot90').addEventListener('click', () => { const o = O(); if (o) setRot(o, o.rot + 90); });
+    $('oColor').addEventListener('input', (e) => { const o = O(); if (!o) return; o.color = e.target.value; upd(o); });
+    $('oOp').addEventListener('input', (e) => { const o = O(); if (!o) return; o.op = clamp(num(e.target.value, 1), 0.1, 1); upd(o); });
+    $('oLock').addEventListener('change', (e) => { const o = O(); if (!o) return; o.locked = e.target.checked; upd(o, true); });
+    const move = (dir) => {
+      const o = O(); if (!o) return;
+      const i = state.objects.indexOf(o), j = clamp(i + dir, 0, state.objects.length - 1);
+      if (i === j) return;
+      state.objects.splice(i, 1); state.objects.splice(j, 0, o);
+      renderAllObjs(); save();
+    };
+    $('oFront').addEventListener('click', () => move(+1));
+    $('oBack').addEventListener('click', () => move(-1));
+    $('oDup').addEventListener('click', () => {
+      const o = O(); if (!o) return;
+      const c = normalizeObj(Object.assign({}, JSON.parse(JSON.stringify(o)), { id: 'o' + state.nextId++, name: o.name + ' (cópia)', gx: o.gx + 1, gy: o.gy + 1, locked: false }));
+      state.objects.push(c); renderAllObjs(); save(); selectObj(c.id, true);
+    });
+    $('oDel').addEventListener('click', () => { const o = O(); if (o && confirm(`Remover "${o.name}"?`)) removeObject(o.id); });
+  }
+
+  function removeObject(id) {
+    state.objects = state.objects.filter((o) => String(o.id) !== String(id));
+    if (selectedObjId === id) { selectedObjId = null; $('objPanel').hidden = true; }
+    renderAllObjs(); save(); refreshObjList();
+  }
+
+  /* ---------------------------------------------------------
+     Domínios: Expansão de Domínio (cena + áudio + círculo escuro)
+     e Domínio Simples (anel que segue o token)
+  --------------------------------------------------------- */
+  const domEls = new Map();
+  const spawnIds = new Set();
+  let domAudio = null, audioTesting = false;
+  let fxActive = false, fxTimers = [], fxOnSpawn = null;
+
+  function domCenterOf(d) {
+    if (d.tokenId) {
+      const t = findToken(d.tokenId);
+      if (t) return { gx: t.gx + t.size / 2, gy: t.gy + t.size / 2 };
+    }
+    return { gx: d.gx, gy: d.gy };
+  }
+  const domAttached = (d) => !!(d.tokenId && findToken(d.tokenId));
+
+  function renderDomains() {
+    domLayer.style.setProperty('--dop', String(state.dom.op));
+    const ids = new Set(state.domains.map((d) => d.id));
+    for (const [id, el] of domEls) if (!ids.has(id)) { el.remove(); domEls.delete(id); }
+    const cell = state.map.cell;
+    for (const d of state.domains) {
+      let el = domEls.get(d.id);
+      if (!el) {
+        el = document.createElement('div');
+        el.dataset.id = d.id;
+        el.innerHTML = '<div class="pop"><div class="ring"></div><div class="shock"></div></div><div class="dlabel"></div>';
+        if (spawnIds.has(d.id)) {
+          spawnIds.delete(d.id);
+          el.classList.add('spawn');
+          el.querySelector('.pop').addEventListener('animationend', () => el.classList.remove('spawn'), { once: true });
+          setTimeout(() => el.classList.remove('spawn'), 1600);
+        }
+        domEls.set(d.id, el);
+        domLayer.appendChild(el);
+      }
+      const c = domCenterOf(d), pos = gridToWorld(c.gx, c.gy), R = d.r * cell;
+      el.style.left = pos.x - R + 'px'; el.style.top = pos.y - R + 'px';
+      el.style.width = el.style.height = R * 2 + 'px';
+      const wasSpawn = el.classList.contains('spawn');
+      const free = !domAttached(d);
+      el.className = 'dom ' + d.kind + (free ? ' free' : '') + (wasSpawn ? ' spawn' : '');
+      const lab = el.querySelector('.dlabel');
+      lab.textContent = (free ? '✥ ' : '') + (d.kind === 'simples' ? 'Domínio Simples' : (d.name || 'Expansão de Domínio'));
+      lab.title = free ? 'Arraste para mover o domínio' : '';
+    }
+    // Domínio Simples sempre por cima das Expansões; só mexe no DOM se a ordem mudou (não reinicia as animações)
+    const ord = [...state.domains.filter((d) => d.kind === 'expansao'), ...state.domains.filter((d) => d.kind === 'simples')];
+    ord.forEach((d, i) => { const el = domEls.get(d.id); if (domLayer.children[i] !== el) domLayer.insertBefore(el, domLayer.children[i] || null); });
+  }
+
+  function refreshDomCenter() {
+    const sel = $('domCenter'), keep = sel.value;
+    sel.innerHTML = '<option value="">📍 Centro da tela</option>';
+    state.tokens.forEach((t) => sel.add(new Option('● ' + t.name, t.id)));
+    sel.value = state.tokens.some((t) => String(t.id) === keep) ? keep : '';
+  }
+
+  function refreshDomList() {
+    const ul = $('domList'); ul.innerHTML = '';
+    if (!state.domains.length) { ul.innerHTML = '<li class="empty">Nenhum domínio ativo.</li>'; return; }
+    state.domains.forEach((d) => {
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      const tk = domAttached(d) ? findToken(d.tokenId) : null;
+      b.className = 'nm'; b.title = 'Centralizar na tela';
+      b.textContent = (d.kind === 'simples' ? '◌ Simples' : '● Expansão') + (tk ? ' · ' + tk.name : '');
+      b.addEventListener('click', () => { const c = domCenterOf(d); centerOnGrid(c.gx, c.gy); });
+      const r = document.createElement('input');
+      r.type = 'number'; r.min = '0.5'; r.max = '60'; r.step = '0.5'; r.value = d.r; r.title = 'Raio em casas';
+      r.addEventListener('input', () => { d.r = clamp(num(r.value, d.r), 0.5, 60); renderDomains(); save(); });
+      const x = document.createElement('button');
+      x.className = 'x'; x.textContent = '✕'; x.title = 'Encerrar este domínio';
+      x.addEventListener('click', () => removeDomain(d.id));
+      li.append(b, r, x);
+      ul.appendChild(li);
+    });
+  }
+
+  function removeDomain(id) {
+    state.domains = state.domains.filter((d) => d.id !== id);
+    renderDomains(); save(); refreshDomList();
+  }
+
+  // posição escolhida no menu: token (preso) ou centro da tela
+  function pickDomCenter() {
+    const tid = $('domCenter').value, t = tid && findToken(tid);
+    if (t) return { gx: t.gx + t.size / 2, gy: t.gy + t.size / 2, tokenId: t.id };
+    const c = screenToWorld(viewport.clientWidth / 2, viewport.clientHeight / 2), g = worldToGrid(c.x, c.y);
+    return { gx: Math.round(g.gx * 2) / 2, gy: Math.round(g.gy * 2) / 2, tokenId: null };
+  }
+
+  function addDomain(kind, c, animate = true) {
+    const cfg = state.dom;
+    const d = normalizeDomain({
+      id: 'd' + state.nextId++, kind, gx: c.gx, gy: c.gy,
+      r: kind === 'simples' ? cfg.rs : cfg.r,
+      tokenId: kind === 'simples' ? c.tokenId : null, // só o Domínio Simples segue o token
+      name: kind === 'expansao' ? cfg.name : '',
+    });
+    state.domains.push(d);
+    if (animate) spawnIds.add(d.id);
+    renderDomains(); save(); refreshDomList();
+    return d;
+  }
+
+  /* ----- áudio ----- */
+  function stopDomAudio() {
+    if (domAudio) { try { domAudio.pause(); } catch (_) {} domAudio = null; }
+    audioTesting = false;
+    $('btnDomAudioTest').textContent = '🔊 Testar áudio';
+  }
+  function playDomAudio() {
+    stopDomAudio();
+    const src = (state.dom.audio || '').trim();
+    if (!src) return false;
+    const a = new Audio(src);
+    a.volume = clamp(state.dom.vol, 0, 1);
+    a.addEventListener('ended', () => { if (domAudio === a) stopDomAudio(); });
+    domAudio = a;
+    a.play().catch(() => {
+      if (domAudio === a) stopDomAudio();
+      toast('Não consegui tocar o áudio. Use um arquivo .mp3, .ogg ou .wav (caminho do repositório ou link direto para o arquivo).', 6500);
+    });
+    return true;
+  }
+
+  /* ----- cena em tela cheia ----- */
+  function runDomainFx(onSpawn) {
+    const fx = $('domFx'), dur = state.dom.dur;
+    fxActive = true; fxOnSpawn = onSpawn;
+    ['mapPanel', 'objPanel'].forEach((p) => { $(p).hidden = true; });
+    $('btnMap').classList.remove('on');
+    $('domFxSub').textContent = state.dom.name || '';
+    $('domFxSub').hidden = !state.dom.name;
+    fx.style.setProperty('--dur', dur + 's');
+    fx.hidden = false; fx.classList.remove('run'); void fx.offsetWidth; fx.classList.add('run');
+    playDomAudio();
+    fxTimers = [
+      setTimeout(fireSpawn, dur * 780),   // o círculo nasce quando a cena começa a sumir
+      setTimeout(endFx, dur * 1000 + 60),
+    ];
+  }
+  function fireSpawn() { if (fxOnSpawn) { const f = fxOnSpawn; fxOnSpawn = null; f(); } }
+  function endFx() {
+    fxTimers.forEach(clearTimeout); fxTimers = [];
+    fireSpawn();
+    const fx = $('domFx'); fx.hidden = true; fx.classList.remove('run');
+    fxActive = false;
+  }
+  function skipFx() { if (!fxActive) return; stopDomAudio(); endFx(); }
+
+  function triggerExpansion() {
+    if (fxActive) return;
+    const c = pickDomCenter();
+    if (state.dom.noFx) { addDomain('expansao', c); return; }
+    runDomainFx(() => addDomain('expansao', c));
+  }
+  function triggerSimple() {
+    addDomain('simples', pickDomCenter());
+  }
+
+  function syncDomPanel() {
+    const c = state.dom;
+    $('domR').value = c.r; $('domRs').value = c.rs; $('domName').value = c.name;
+    $('domAudio').value = c.audio; $('domVol').value = c.vol; $('domDur').value = c.dur;
+    $('domOp').value = c.op; $('domNoFx').checked = c.noFx;
+    updDomMeters(); refreshDomCenter(); refreshDomList(); refreshObjList();
+  }
+  function updDomMeters() {
+    const c = state.dom, m = state.map.mpc;
+    $('domMeters').textContent = `Expansão ≈ ${fmtN(c.r * m)} m de raio · Domínio Simples ≈ ${fmtN(c.rs * m)} m de raio (1 casa = ${fmtN(m)} m).`;
+  }
+
+  function bindDomains() {
+    const C = () => state.dom;
+    $('domR').addEventListener('input', (e) => { C().r = clamp(num(e.target.value, 6), 0.5, 60); updDomMeters(); save(); });
+    $('domRs').addEventListener('input', (e) => { C().rs = clamp(num(e.target.value, 2), 0.5, 60); updDomMeters(); save(); });
+    $('domName').addEventListener('input', (e) => { C().name = e.target.value.slice(0, 60); save(); });
+    $('domAudio').addEventListener('change', (e) => { C().audio = e.target.value.trim(); save(); });
+    $('domVol').addEventListener('input', (e) => { C().vol = clamp(num(e.target.value, 0.8), 0, 1); if (domAudio) domAudio.volume = C().vol; save(); });
+    $('domDur').addEventListener('input', (e) => { C().dur = clamp(num(e.target.value, 4), 2, 20); save(); });
+    $('domOp').addEventListener('input', (e) => { C().op = clamp(num(e.target.value, 0.82), 0.3, 0.95); renderDomains(); save(); });
+    $('domNoFx').addEventListener('change', (e) => { C().noFx = e.target.checked; save(); });
+    $('btnDomAudioTest').addEventListener('click', () => {
+      if (audioTesting) { stopDomAudio(); return; }
+      C().audio = $('domAudio').value.trim();
+      if (!C().audio) { toast('Digite o caminho ou o link do áudio primeiro.'); return; }
+      if (playDomAudio()) { audioTesting = true; $('btnDomAudioTest').textContent = '⏹ Parar'; }
+    });
+    $('btnExpd').addEventListener('click', () => { C().audio = $('domAudio').value.trim(); triggerExpansion(); });
+    $('btnDomSimples').addEventListener('click', triggerSimple);
+    $('btnDomClear').addEventListener('click', () => {
+      if (!state.domains.length) return;
+      state.domains = []; renderDomains(); save(); refreshDomList();
+    });
+    $('domFx').addEventListener('pointerdown', (e) => { e.stopPropagation(); skipFx(); });
+    $('domCenter').addEventListener('change', () => {});
+
+    // acordeão: abrir uma seção fecha as outras
+    const secs = ['secMapa', 'secDom', 'secObj'].map($);
+    secs.forEach((s) => s.addEventListener('toggle', () => {
+      if (s.open) secs.forEach((o) => { if (o !== s) o.open = false; });
+      if (s.open) { refreshDomCenter(); refreshDomList(); refreshObjList(); $('mapPanel').querySelector('.panel-body').scrollTop = 0; }
+    }));
   }
 
   /* ---------------------------------------------------------
@@ -841,7 +1357,11 @@
     if (keepView) state.view = old;
     for (const el of tokenEls.values()) el.remove();
     tokenEls.clear();
-    selectedId = null;
+    for (const el of objEls.values()) el.remove();
+    objEls.clear();
+    for (const el of domEls.values()) el.remove();
+    domEls.clear();
+    selectedId = null; selectedObjId = null; $('objPanel').hidden = true;
     bootView();
     syncMapPanel();
     saveNow();
@@ -909,7 +1429,7 @@
     ['mapPanel', 'scenePanel'].forEach((p) => { if (p !== id) $(p).hidden = true; });
     el.hidden = !show;
     if (id === 'mapPanel') $('btnMap').classList.toggle('on', show);
-    if (id === 'dicePanel') $('btnDice').classList.toggle('on', show);
+    if (id === 'dicePanel') { $('btnDice').classList.toggle('on', show); if (show) selectObj(null); }
     if (id === 'mapPanel' && show) syncMapPanel();
   }
 
@@ -966,8 +1486,9 @@
     document.addEventListener('keydown', (e) => {
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '');
       if (e.key === 'Escape') {
-        if (!modal.hidden) closeModal();
-        else { ['mapPanel', 'scenePanel', 'dicePanel'].forEach((p) => togglePanel(p, false)); setRulerMode(false); }
+        if (fxActive) skipFx();
+        else if (!modal.hidden) closeModal();
+        else { ['mapPanel', 'scenePanel', 'dicePanel'].forEach((p) => togglePanel(p, false)); selectObj(null); setRulerMode(false); }
         return;
       }
       if (typing || !modal.hidden || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -978,6 +1499,8 @@
         case '-': case '_': zoomCenter(1 / 1.25); break;
         case '0': fitView(); break;
         case 'Delete': case 'Backspace': {
+          const ob = selectedObjId && findObj(selectedObjId);
+          if (ob) { if (confirm(`Remover "${ob.name}"?`)) removeObject(ob.id); break; }
           const t = selectedId && findToken(selectedId);
           if (t && confirm(`Remover "${t.name}" do mapa?`)) removeToken(t.id);
           break;
@@ -991,8 +1514,11 @@
   --------------------------------------------------------- */
   async function init() {
     load();
-    bindToolbar(); bindMapPanel(); bindModal(); bindScene();
+    bindToolbar(); bindMapPanel(); bindModal(); bindScene(); bindObjects(); bindDomains();
     new ResizeObserver(() => { drawGrid(); drawFx(); }).observe(viewport);
+    const tb = $('toolbar');
+    const syncTb = () => document.documentElement.style.setProperty('--tb', tb.offsetHeight + 'px');
+    new ResizeObserver(syncTb).observe(tb); syncTb();
 
     if (!hadSavedState) {
       // primeira visita: tenta carregar a cena publicada pelo mestre (se existir)
