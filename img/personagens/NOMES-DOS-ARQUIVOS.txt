@@ -1,0 +1,52 @@
+NOMES DOS ARQUIVOS DE IMAGEM DOS PERSONAGENS
+==============================================
+
+Salve as imagens nesta pasta (img/personagens/) com EXATAMENTE estes nomes.
+Se um arquivo não existir, a mesa simplesmente ignora aquela foto.
+Vale .png, .jpg, .jpeg ou .webp (a mesa tenta as quatro extensões sozinha).
+
+  -normal  = foto 1 (retrato / normal)
+  -acao    = foto 2 (transformação / ação)
+  -caido   = foto 3 (caído / morto)
+
+
+--- Jogadores ---
+Kenshin Zenin            kenshin-zenin-normal.png   kenshin-zenin-acao.png   kenshin-zenin-caido.png
+Reika Akaime             reika-akaime-normal.png   reika-akaime-acao.png   reika-akaime-caido.png
+
+--- Aliados e NPCs ---
+Suzu Amano               suzu-amano-normal.png   suzu-amano-acao.png   suzu-amano-caido.png
+Souma Shiraishi          souma-shiraishi-normal.png   souma-shiraishi-acao.png   souma-shiraishi-caido.png
+Íris Katsura             iris-katsura-normal.png   iris-katsura-acao.png   iris-katsura-caido.png
+
+--- Classe Especial ---
+Kaito Shirogane          kaito-shirogane-normal.png   kaito-shirogane-acao.png   kaito-shirogane-caido.png
+Ren Kurosawa             ren-kurosawa-normal.png   ren-kurosawa-acao.png   ren-kurosawa-caido.png
+Goro Akai                goro-akai-normal.png   goro-akai-acao.png   goro-akai-caido.png
+Leon Amaral              leon-amaral-normal.png   leon-amaral-acao.png   leon-amaral-caido.png
+Benimaru Kagurazaka      benimaru-kagurazaka-normal.png   benimaru-kagurazaka-acao.png   benimaru-kagurazaka-caido.png
+Itsuki Karasuma          itsuki-karasuma-normal.png   itsuki-karasuma-acao.png   itsuki-karasuma-caido.png
+Sousuke Kanzaki          sousuke-kanzaki-normal.png   sousuke-kanzaki-acao.png   sousuke-kanzaki-caido.png
+Toru Kishida             toru-kishida-normal.png   toru-kishida-acao.png   toru-kishida-caido.png
+Gou Reiji                gou-reiji-normal.png   gou-reiji-acao.png   gou-reiji-caido.png
+Rei Akashi               rei-akashi-normal.png   rei-akashi-acao.png   rei-akashi-caido.png
+Kimura                   kimura-normal.png   kimura-acao.png   kimura-caido.png
+Vladir Akasaka           vladir-akasaka-normal.png   vladir-akasaka-acao.png   vladir-akasaka-caido.png
+Akito Tsukuyomi          akito-tsukuyomi-normal.png   akito-tsukuyomi-acao.png   akito-tsukuyomi-caido.png
+Katsuro Sagara           katsuro-sagara-normal.png   katsuro-sagara-acao.png   katsuro-sagara-caido.png
+Kyouma Hakuryuu          kyouma-hakuryuu-normal.png   kyouma-hakuryuu-acao.png   kyouma-hakuryuu-caido.png
+Akane Toudou             akane-toudou-normal.png   akane-toudou-acao.png   akane-toudou-caido.png
+
+--- Feiticeiros e vilões (Classe I e II) ---
+Hisae Kamo               hisae-kamo-normal.png   hisae-kamo-acao.png   hisae-kamo-caido.png
+Haru Kuroba              haru-kuroba-normal.png   haru-kuroba-acao.png   haru-kuroba-caido.png
+Yōsuke Iwakura           yosuke-iwakura-normal.png   yosuke-iwakura-acao.png   yosuke-iwakura-caido.png
+Kayn                     kayn-normal.png   kayn-acao.png   kayn-caido.png
+Renzo Abe                renzo-abe-normal.png   renzo-abe-acao.png   renzo-abe-caido.png
+
+--- Maldições ---
+Anônimo                  anonimo-normal.png   anonimo-acao.png   anonimo-caido.png
+Profundis                profundis-normal.png   profundis-acao.png   profundis-caido.png
+Testemunha               testemunha-normal.png   testemunha-acao.png   testemunha-caido.png
+Talião                   taliao-normal.png   taliao-acao.png   taliao-caido.png
+Ninho                    ninho-normal.png   ninho-acao.png   ninho-caido.png
