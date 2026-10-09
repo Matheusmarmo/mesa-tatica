@@ -6,6 +6,12 @@
       "cell": 70,
       "metrosPorQuadrado": 1.5
     }
+      {
+      "nome": "Porto",
+      "src": "img/mapas/Porto (1).svg",
+      "cell": 100,
+      "metrosPorQuadrado": 1.5
+    }
   ],
   "personagens": [
     {
