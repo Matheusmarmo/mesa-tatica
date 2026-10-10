@@ -1,0 +1,12 @@
+Coloque aqui os áudios da Expansão de Domínio (.mp3, .ogg ou .wav).
+
+No jogo: botão "🗺 Mapa" > "🌀 Domínios" > campo "Áudio" e digite o caminho, por exemplo:
+    audio/meu-dominio.mp3
+
+Dicas:
+- Nomes em minúsculas, sem espaços e sem acentos.
+- Corte o trecho para uns 5 a 15 segundos (o arquivo fica leve e a cena não se arrasta).
+- Também funciona um link direto para um arquivo .mp3/.ogg/.wav de outro site, mas links de
+  YouTube / página do Google Drive NÃO funcionam (não são o arquivo de áudio em si).
+- exemplo-dominio.wav é só um som de teste gerado para esta mesa. Pode apagar quando
+  tiver o seu.
