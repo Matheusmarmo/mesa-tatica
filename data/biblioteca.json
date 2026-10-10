@@ -1,414 +1,483 @@
 {
-  "mapas": [
-    {
-      "nome": "Rua de exemplo",
-      "src": "img/mapas/exemplo-rua.svg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
-    },
-      {
+ "mapas": [
+  {
+   "nome": "Rua de exemplo",
+   "src": "img/mapas/exemplo-rua.svg",
+   "cell": 70,
+   "metrosPorQuadrado": 1.5
+  },
+   {
       "nome": "Porto",
       "src": "img/mapas/porto.jpeg",
       "cell": 70,
       "metrosPorQuadrado": 1.5
     }
-  ],
-  "personagens": [
-    {
-      "nome": "Kenshin Zenin",
-      "grupo": "Jogadores",
-      "fotos": [
-        "img/personagens/kenshin-zenin-normal.png",
-        "img/personagens/kenshin-zenin-acao.png",
-        "img/personagens/kenshin-zenin-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Classe I · Clã Zenin",
-      "pvMax": 54,
-      "eaMax": 64,
-      "tipo": "jogador"
-    },
-    {
-      "nome": "Reika Akaime",
-      "grupo": "Jogadores",
-      "fotos": [
-        "img/personagens/reika-akaime-normal.png",
-        "img/personagens/reika-akaime-acao.png",
-        "img/personagens/reika-akaime-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Família Akaime (Olhos Escarlates) · classe a definir",
-      "tipo": "jogador"
-    },
-    {
-      "nome": "Suzu Amano",
-      "grupo": "Aliados e NPCs",
-      "fotos": [
-        "img/personagens/suzu-amano-normal.png",
-        "img/personagens/suzu-amano-acao.png",
-        "img/personagens/suzu-amano-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Feiticeira de suporte · Classe III",
-      "pvMax": 150,
-      "eaMax": 24,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Souma Shiraishi",
-      "grupo": "Aliados e NPCs",
-      "fotos": [
-        "img/personagens/souma-shiraishi-normal.png",
-        "img/personagens/souma-shiraishi-acao.png",
-        "img/personagens/souma-shiraishi-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Presas de Ferro · Classe II",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Íris Katsura",
-      "grupo": "Aliados e NPCs",
-      "fotos": [
-        "img/personagens/iris-katsura-normal.png",
-        "img/personagens/iris-katsura-acao.png",
-        "img/personagens/iris-katsura-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Feiticeira · Classe II",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Kaito Shirogane",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/kaito-shirogane-normal.png",
-        "img/personagens/kaito-shirogane-acao.png",
-        "img/personagens/kaito-shirogane-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Olho de Espelho · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Ren Kurosawa",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/ren-kurosawa-normal.png",
-        "img/personagens/ren-kurosawa-acao.png",
-        "img/personagens/ren-kurosawa-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "A Última Chama do Clã Kurosawa · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Goro Akai",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/goro-akai-normal.png",
-        "img/personagens/goro-akai-acao.png",
-        "img/personagens/goro-akai-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Selado · Classe Especial",
-      "pvMax": 620,
-      "eaMax": 58,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Leon Amaral",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/leon-amaral-normal.png",
-        "img/personagens/leon-amaral-acao.png",
-        "img/personagens/leon-amaral-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Orgulho do Meio-Dia · Classe Especial (PV/Defesa base; dobram ao meio-dia)",
-      "pvMax": 400,
-      "eaMax": 60,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Benimaru Kagurazaka",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/benimaru-kagurazaka-normal.png",
-        "img/personagens/benimaru-kagurazaka-acao.png",
-        "img/personagens/benimaru-kagurazaka-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Dragão Flamejante · Classe Especial",
-      "pvMax": 460,
-      "eaMax": 66,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Itsuki Karasuma",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/itsuki-karasuma-normal.png",
-        "img/personagens/itsuki-karasuma-acao.png",
-        "img/personagens/itsuki-karasuma-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Corvo que Não Esquece · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Sousuke Kanzaki",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/sousuke-kanzaki-normal.png",
-        "img/personagens/sousuke-kanzaki-acao.png",
-        "img/personagens/sousuke-kanzaki-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Sorriso Que Reescreve o Mundo · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Toru Kishida",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/toru-kishida-normal.png",
-        "img/personagens/toru-kishida-acao.png",
-        "img/personagens/toru-kishida-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Símbolo Que Ainda Sorri · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Gou Reiji",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/gou-reiji-normal.png",
-        "img/personagens/gou-reiji-acao.png",
-        "img/personagens/gou-reiji-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Espadachim da Lâmina Rachada · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Rei Akashi",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/rei-akashi-normal.png",
-        "img/personagens/rei-akashi-acao.png",
-        "img/personagens/rei-akashi-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Soldado Mais Forte da Escola · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Kimura",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/kimura-normal.png",
-        "img/personagens/kimura-acao.png",
-        "img/personagens/kimura-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Rei Que Nasceu Perfeito · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Vladir Akasaka",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/vladir-akasaka-normal.png",
-        "img/personagens/vladir-akasaka-acao.png",
-        "img/personagens/vladir-akasaka-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Conde de Sangue Vazio · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Akito Tsukuyomi",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/akito-tsukuyomi-normal.png",
-        "img/personagens/akito-tsukuyomi-acao.png",
-        "img/personagens/akito-tsukuyomi-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Deus da Nova Ordem · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Katsuro Sagara",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/katsuro-sagara-normal.png",
-        "img/personagens/katsuro-sagara-acao.png",
-        "img/personagens/katsuro-sagara-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Coringa · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Kyouma Hakuryuu",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/kyouma-hakuryuu-normal.png",
-        "img/personagens/kyouma-hakuryuu-acao.png",
-        "img/personagens/kyouma-hakuryuu-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Sonho que Devora · Classe Especial",
-      "pvMax": 520,
-      "eaMax": 72,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Akane Toudou",
-      "grupo": "Classe Especial",
-      "fotos": [
-        "img/personagens/akane-toudou-normal.png",
-        "img/personagens/akane-toudou-acao.png",
-        "img/personagens/akane-toudou-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Armamento Completo · Classe Especial",
-      "pvMax": 460,
-      "eaMax": 68,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Hisae Kamo",
-      "grupo": "Feiticeiros e vilões (Classe I e II)",
-      "fotos": [
-        "img/personagens/hisae-kamo-normal.png",
-        "img/personagens/hisae-kamo-acao.png",
-        "img/personagens/hisae-kamo-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Sangue-Puro · Clã Kamo · Classe I",
-      "pvMax": 380,
-      "eaMax": 55,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Haru Kuroba",
-      "grupo": "Feiticeiros e vilões (Classe I e II)",
-      "fotos": [
-        "img/personagens/haru-kuroba-normal.png",
-        "img/personagens/haru-kuroba-acao.png",
-        "img/personagens/haru-kuroba-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Relâmpago Silencioso · Classe I",
-      "pvMax": 340,
-      "eaMax": 50,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Yōsuke Iwakura",
-      "grupo": "Feiticeiros e vilões (Classe I e II)",
-      "fotos": [
-        "img/personagens/yosuke-iwakura-normal.png",
-        "img/personagens/yosuke-iwakura-acao.png",
-        "img/personagens/yosuke-iwakura-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "O Muro de Areia Negra · Classe I",
-      "pvMax": 420,
-      "eaMax": 58,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Kayn",
-      "grupo": "Feiticeiros e vilões (Classe I e II)",
-      "fotos": [
-        "img/personagens/kayn-normal.png",
-        "img/personagens/kayn-acao.png",
-        "img/personagens/kayn-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Três Armas, Mil Rostos · Jogo do Abate · Classe II",
-      "pvMax": 300,
-      "eaMax": 46,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Renzo Abe",
-      "grupo": "Feiticeiros e vilões (Classe I e II)",
-      "fotos": [
-        "img/personagens/renzo-abe-normal.png",
-        "img/personagens/renzo-abe-acao.png",
-        "img/personagens/renzo-abe-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Usuário de Maldição · Classe II",
-      "pvMax": 240,
-      "eaMax": 30,
-      "tipo": "npc"
-    },
-    {
-      "nome": "Anônimo",
-      "grupo": "Maldições",
-      "fotos": [
-        "img/personagens/anonimo-normal.png",
-        "img/personagens/anonimo-acao.png",
-        "img/personagens/anonimo-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Espírito do Esquecimento · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Profundis",
-      "grupo": "Maldições",
-      "fotos": [
-        "img/personagens/profundis-normal.png",
-        "img/personagens/profundis-acao.png",
-        "img/personagens/profundis-caido.png"
-      ],
-      "tamanho": 3,
-      "notas": "Espírito do Abismo · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Testemunha",
-      "grupo": "Maldições",
-      "fotos": [
-        "img/personagens/testemunha-normal.png",
-        "img/personagens/testemunha-acao.png",
-        "img/personagens/testemunha-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Espírito do Julgamento · Classe Especial",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Talião",
-      "grupo": "Maldições",
-      "fotos": [
-        "img/personagens/taliao-normal.png",
-        "img/personagens/taliao-acao.png",
-        "img/personagens/taliao-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Espírito da Vingança Desproporcional · Classe I",
-      "tipo": "npc"
-    },
-    {
-      "nome": "Ninho",
-      "grupo": "Maldições",
-      "fotos": [
-        "img/personagens/ninho-normal.png",
-        "img/personagens/ninho-acao.png",
-        "img/personagens/ninho-caido.png"
-      ],
-      "tamanho": 1,
-      "notas": "Espírito do Enxame · Classe I",
-      "tipo": "npc"
-    }
-  ]
+ ],
+ "personagens": [
+  {
+   "nome": "Kenshin Zenin",
+   "grupo": "Jogadores",
+   "fotos": [
+    "img/personagens/kenshin-zenin-avatar.png",
+    "img/personagens/kenshin-zenin-normal.png",
+    "img/personagens/kenshin-zenin-machucado.png",
+    "img/personagens/kenshin-zenin-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Classe I · Clã Zenin",
+   "pvMax": 54,
+   "eaMax": 64,
+   "tipo": "jogador"
+  },
+  {
+   "nome": "Reika Akaime",
+   "grupo": "Jogadores",
+   "fotos": [
+    "img/personagens/reika-akaime-avatar.png",
+    "img/personagens/reika-akaime-normal.png",
+    "img/personagens/reika-akaime-machucado.png",
+    "img/personagens/reika-akaime-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Família Akaime (Olhos Escarlates) · classe a definir",
+   "tipo": "jogador"
+  },
+  {
+   "nome": "Suzu Amano",
+   "grupo": "Aliados e NPCs",
+   "fotos": [
+    "img/personagens/suzu-amano-avatar.png",
+    "img/personagens/suzu-amano-normal.png",
+    "img/personagens/suzu-amano-machucado.png",
+    "img/personagens/suzu-amano-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Feiticeira de suporte · Classe III",
+   "pvMax": 150,
+   "eaMax": 24,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Souma Shiraishi",
+   "grupo": "Aliados e NPCs",
+   "fotos": [
+    "img/personagens/souma-shiraishi-avatar.png",
+    "img/personagens/souma-shiraishi-normal.png",
+    "img/personagens/souma-shiraishi-machucado.png",
+    "img/personagens/souma-shiraishi-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Presas de Ferro · Classe II",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Íris Katsura",
+   "grupo": "Aliados e NPCs",
+   "fotos": [
+    "img/personagens/iris-katsura-avatar.png",
+    "img/personagens/iris-katsura-normal.png",
+    "img/personagens/iris-katsura-machucado.png",
+    "img/personagens/iris-katsura-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Feiticeira · Classe II",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Kaito Shirogane",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/kaito-shirogane-avatar.png",
+    "img/personagens/kaito-shirogane-normal.png",
+    "img/personagens/kaito-shirogane-machucado.png",
+    "img/personagens/kaito-shirogane-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Olho de Espelho · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Ren Kurosawa",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/ren-kurosawa-avatar.png",
+    "img/personagens/ren-kurosawa-normal.png",
+    "img/personagens/ren-kurosawa-machucado.png",
+    "img/personagens/ren-kurosawa-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "A Última Chama do Clã Kurosawa · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Goro Akai",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/goro-akai-avatar.png",
+    "img/personagens/goro-akai-normal.png",
+    "img/personagens/goro-akai-machucado.png",
+    "img/personagens/goro-akai-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Selado · Classe Especial",
+   "pvMax": 620,
+   "eaMax": 58,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Leon Amaral",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/leon-amaral-avatar.png",
+    "img/personagens/leon-amaral-normal.png",
+    "img/personagens/leon-amaral-machucado.png",
+    "img/personagens/leon-amaral-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Orgulho do Meio-Dia · Classe Especial (PV/Defesa base; dobram ao meio-dia)",
+   "pvMax": 400,
+   "eaMax": 60,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Benimaru Kagurazaka",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/benimaru-kagurazaka-avatar.png",
+    "img/personagens/benimaru-kagurazaka-normal.png",
+    "img/personagens/benimaru-kagurazaka-machucado.png",
+    "img/personagens/benimaru-kagurazaka-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Dragão Flamejante · Classe Especial",
+   "pvMax": 460,
+   "eaMax": 66,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Itsuki Karasuma",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/itsuki-karasuma-avatar.png",
+    "img/personagens/itsuki-karasuma-normal.png",
+    "img/personagens/itsuki-karasuma-machucado.png",
+    "img/personagens/itsuki-karasuma-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Corvo que Não Esquece · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Sousuke Kanzaki",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/sousuke-kanzaki-avatar.png",
+    "img/personagens/sousuke-kanzaki-normal.png",
+    "img/personagens/sousuke-kanzaki-machucado.png",
+    "img/personagens/sousuke-kanzaki-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Sorriso Que Reescreve o Mundo · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Toru Kishida",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/toru-kishida-avatar.png",
+    "img/personagens/toru-kishida-normal.png",
+    "img/personagens/toru-kishida-machucado.png",
+    "img/personagens/toru-kishida-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Símbolo Que Ainda Sorri · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Gou Reiji",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/gou-reiji-avatar.png",
+    "img/personagens/gou-reiji-normal.png",
+    "img/personagens/gou-reiji-machucado.png",
+    "img/personagens/gou-reiji-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Espadachim da Lâmina Rachada · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Rei Akashi",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/rei-akashi-avatar.png",
+    "img/personagens/rei-akashi-normal.png",
+    "img/personagens/rei-akashi-machucado.png",
+    "img/personagens/rei-akashi-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Soldado Mais Forte da Escola · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Kimura",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/kimura-avatar.png",
+    "img/personagens/kimura-normal.png",
+    "img/personagens/kimura-machucado.png",
+    "img/personagens/kimura-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Rei Que Nasceu Perfeito · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Vladir Akasaka",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/vladir-akasaka-avatar.png",
+    "img/personagens/vladir-akasaka-normal.png",
+    "img/personagens/vladir-akasaka-machucado.png",
+    "img/personagens/vladir-akasaka-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Conde de Sangue Vazio · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Akito Tsukuyomi",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/akito-tsukuyomi-avatar.png",
+    "img/personagens/akito-tsukuyomi-normal.png",
+    "img/personagens/akito-tsukuyomi-machucado.png",
+    "img/personagens/akito-tsukuyomi-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Deus da Nova Ordem · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Katsuro Sagara",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/katsuro-sagara-avatar.png",
+    "img/personagens/katsuro-sagara-normal.png",
+    "img/personagens/katsuro-sagara-machucado.png",
+    "img/personagens/katsuro-sagara-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Coringa · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Kyouma Hakuryuu",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/kyouma-hakuryuu-avatar.png",
+    "img/personagens/kyouma-hakuryuu-normal.png",
+    "img/personagens/kyouma-hakuryuu-machucado.png",
+    "img/personagens/kyouma-hakuryuu-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Sonho que Devora · Classe Especial",
+   "pvMax": 520,
+   "eaMax": 72,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Akane Toudou",
+   "grupo": "Classe Especial",
+   "fotos": [
+    "img/personagens/akane-toudou-avatar.png",
+    "img/personagens/akane-toudou-normal.png",
+    "img/personagens/akane-toudou-machucado.png",
+    "img/personagens/akane-toudou-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Armamento Completo · Classe Especial",
+   "pvMax": 460,
+   "eaMax": 68,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Hisae Kamo",
+   "grupo": "Feiticeiros e vilões (Classe I e II)",
+   "fotos": [
+    "img/personagens/hisae-kamo-avatar.png",
+    "img/personagens/hisae-kamo-normal.png",
+    "img/personagens/hisae-kamo-machucado.png",
+    "img/personagens/hisae-kamo-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Sangue-Puro · Clã Kamo · Classe I",
+   "pvMax": 380,
+   "eaMax": 55,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Haru Kuroba",
+   "grupo": "Feiticeiros e vilões (Classe I e II)",
+   "fotos": [
+    "img/personagens/haru-kuroba-avatar.png",
+    "img/personagens/haru-kuroba-normal.png",
+    "img/personagens/haru-kuroba-machucado.png",
+    "img/personagens/haru-kuroba-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Relâmpago Silencioso · Classe I",
+   "pvMax": 340,
+   "eaMax": 50,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Yōsuke Iwakura",
+   "grupo": "Feiticeiros e vilões (Classe I e II)",
+   "fotos": [
+    "img/personagens/yosuke-iwakura-avatar.png",
+    "img/personagens/yosuke-iwakura-normal.png",
+    "img/personagens/yosuke-iwakura-machucado.png",
+    "img/personagens/yosuke-iwakura-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "O Muro de Areia Negra · Classe I",
+   "pvMax": 420,
+   "eaMax": 58,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Kayn",
+   "grupo": "Feiticeiros e vilões (Classe I e II)",
+   "fotos": [
+    "img/personagens/kayn-avatar.png",
+    "img/personagens/kayn-normal.png",
+    "img/personagens/kayn-machucado.png",
+    "img/personagens/kayn-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Três Armas, Mil Rostos · Jogo do Abate · Classe II",
+   "pvMax": 300,
+   "eaMax": 46,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Renzo Abe",
+   "grupo": "Feiticeiros e vilões (Classe I e II)",
+   "fotos": [
+    "img/personagens/renzo-abe-avatar.png",
+    "img/personagens/renzo-abe-normal.png",
+    "img/personagens/renzo-abe-machucado.png",
+    "img/personagens/renzo-abe-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Usuário de Maldição · Classe II",
+   "pvMax": 240,
+   "eaMax": 30,
+   "tipo": "npc"
+  },
+  {
+   "nome": "Anônimo",
+   "grupo": "Maldições",
+   "fotos": [
+    "img/personagens/anonimo-avatar.png",
+    "img/personagens/anonimo-normal.png",
+    "img/personagens/anonimo-machucado.png",
+    "img/personagens/anonimo-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Espírito do Esquecimento · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Profundis",
+   "grupo": "Maldições",
+   "fotos": [
+    "img/personagens/profundis-avatar.png",
+    "img/personagens/profundis-normal.png",
+    "img/personagens/profundis-machucado.png",
+    "img/personagens/profundis-caido.png"
+   ],
+   "tamanho": 3,
+   "notas": "Espírito do Abismo · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Testemunha",
+   "grupo": "Maldições",
+   "fotos": [
+    "img/personagens/testemunha-avatar.png",
+    "img/personagens/testemunha-normal.png",
+    "img/personagens/testemunha-machucado.png",
+    "img/personagens/testemunha-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Espírito do Julgamento · Classe Especial",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Talião",
+   "grupo": "Maldições",
+   "fotos": [
+    "img/personagens/taliao-avatar.png",
+    "img/personagens/taliao-normal.png",
+    "img/personagens/taliao-machucado.png",
+    "img/personagens/taliao-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Espírito da Vingança Desproporcional · Classe I",
+   "tipo": "npc"
+  },
+  {
+   "nome": "Ninho",
+   "grupo": "Maldições",
+   "fotos": [
+    "img/personagens/ninho-avatar.png",
+    "img/personagens/ninho-normal.png",
+    "img/personagens/ninho-machucado.png",
+    "img/personagens/ninho-caido.png"
+   ],
+   "tamanho": 1,
+   "notas": "Espírito do Enxame · Classe I",
+   "tipo": "npc"
+  }
+ ],
+ "objetos": [
+  {
+   "nome": "Caixa",
+   "src": "img/objetos/caixa.svg",
+   "largura": 1,
+   "altura": 1
+  },
+  {
+   "nome": "Barril",
+   "src": "img/objetos/barril.svg",
+   "largura": 1,
+   "altura": 1
+  },
+  {
+   "nome": "Pedra grande",
+   "src": "img/objetos/pedra.svg",
+   "largura": 2,
+   "altura": 2
+  },
+  {
+   "nome": "Pilar",
+   "src": "img/objetos/pilar.svg",
+   "largura": 1,
+   "altura": 1
+  },
+  {
+   "nome": "Mesa",
+   "src": "img/objetos/mesa.svg",
+   "largura": 3,
+   "altura": 2
+  },
+  {
+   "nome": "Carro",
+   "src": "img/objetos/carro.svg",
+   "largura": 3,
+   "altura": 1.5
+  }
+ ]
 }
