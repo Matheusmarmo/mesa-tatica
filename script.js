@@ -13,7 +13,9 @@
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const num = (v, d = 0) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
   const STORE_KEY = 'vtt-rpg-v1';
-  const SLOT_NAMES = ['Normal / Retrato', 'Transformação / Ação', 'Caído / Morto'];
+  const SLOT_NAMES = ['Avatar (ícone do token)', 'Normal (tela grande)', 'Machucado', 'Caído / Morto'];
+  const SLOT_SHORT = ['Avatar', 'Normal', 'Machucado', 'Caído'];
+  const NSLOTS = 4;
   const STATUS_GLYPH = { bem: '✓', machucado: '!', morto: '✖' };
   const PALETTE = ['#5b4bd6', '#d6453f', '#1f9d6b', '#d98a1b', '#2c7bd6', '#b13fc4', '#0e9aa7', '#8a5a2b'];
 
@@ -30,7 +32,7 @@
   --------------------------------------------------------- */
   function defaultState() {
     return {
-      v: 1,
+      v: 2,
       map: {
         src: '', natW: 0, natH: 0,
         cell: 70, offX: 0, offY: 0, cols: 30, rows: 20, mpc: 1.5,
@@ -86,16 +88,23 @@
     };
   }
 
-  function normalizeToken(t, i = 0) {
-    const photos = Array.isArray(t.photos) ? t.photos.slice(0, 3) : [];
-    while (photos.length < 3) photos.push('');
+  // legacy = cena salva no formato antigo (3 fotos: normal, ação, caído) → [avatar, normal, machucado, caído]
+  function normalizeToken(t, i = 0, legacy = false) {
+    let photos = Array.isArray(t.photos) ? t.photos.slice(0, NSLOTS) : [];
+    let photoIndex = Math.round(num(t.photoIndex, 0));
+    if (legacy) {
+      const p = photos.map((x) => (typeof x === 'string' ? x : ''));
+      photos = [p[0] || '', p[0] || '', '', p[2] || ''];
+      photoIndex = photoIndex === 2 ? 3 : 0;
+    }
+    while (photos.length < NSLOTS) photos.push('');
     return {
       id: t.id ?? ('t' + Date.now() + i),
       name: String(t.name ?? 'Token').slice(0, 40),
       gx: num(t.gx, 0), gy: num(t.gy, 0),
       size: clamp(Math.round(num(t.size, 1)), 1, 4),
       photos: photos.map((p) => (typeof p === 'string' ? p : '')),
-      photoIndex: clamp(Math.round(num(t.photoIndex, 0)), 0, 2),
+      photoIndex: clamp(photoIndex, 0, NSLOTS - 1),
       status: ['bem', 'machucado', 'morto'].includes(t.status) ? t.status : 'bem',
       hp: num(t.hp, 0), hpMax: Math.max(0, num(t.hpMax, 0)),
       ea: num(t.ea, 0), eaMax: Math.max(0, num(t.eaMax, 0)),
@@ -119,14 +128,15 @@
     m.src = typeof m.src === 'string' ? m.src : '';
     m.gridOn = m.gridOn !== false; m.snap = m.snap !== false;
     if (!/^#[0-9a-f]{6}$/i.test(m.gridColor || '')) m.gridColor = '#ffffff';
-    const tokens = Array.isArray(raw.tokens) ? raw.tokens.map(normalizeToken) : [];
+    const legacy = !(num(raw.v, 1) >= 2);
+    const tokens = Array.isArray(raw.tokens) ? raw.tokens.map((t, i) => normalizeToken(t, i, legacy)) : [];
     const objects = Array.isArray(raw.objects) ? raw.objects.map(normalizeObj) : [];
     const domains = Array.isArray(raw.domains) ? raw.domains.map(normalizeDomain) : [];
     const idNum = (x) => parseInt(String(x.id).replace(/\D/g, ''), 10) || 0;
     const maxN = [...tokens, ...objects, ...domains].reduce((a, x) => Math.max(a, idNum(x)), 0);
     const view = Object.assign({}, d.view, raw.view || {});
     const opts = { hideNpc: !(raw.opts && raw.opts.hideNpc === false) };
-    return { v: 1, map: m, tokens, objects, domains, dom: normalizeDomCfg(raw.dom), nextId: Math.max(num(raw.nextId, 1), maxN + 1), view, opts };
+    return { v: 2, map: m, tokens, objects, domains, dom: normalizeDomCfg(raw.dom), nextId: Math.max(num(raw.nextId, 1), maxN + 1), view, opts };
   }
 
   let state = defaultState();
@@ -307,11 +317,17 @@
   const tokenEls = new Map();
   let selectedId = null;
 
+  // foto usada no ícone do token: a escolhida (padrão: avatar) e, se faltar, a primeira que existir
   function faceSlot(t) {
-    if (t.status === 'morto' && t.photos[2]) return 2;
-    if (t.photos[t.photoIndex]) return t.photoIndex;
-    const first = t.photos.findIndex(Boolean);
-    return first; // -1 se nenhuma
+    for (const i of [t.photoIndex, 0, 1, 2, 3]) if (t.photos[i]) return i;
+    return -1; // nenhuma
+  }
+
+  // foto grande que combina com o estado: bem = normal, machucado = machucado, morto = caído (com alternativas)
+  function statusSlot(t) {
+    const pref = t.status === 'morto' ? [3, 2, 1, 0] : t.status === 'machucado' ? [2, 1, 0, 3] : [1, 0, 2, 3];
+    for (const i of pref) if (t.photos[i]) return i;
+    return pref[0];
   }
 
   // tokens NPC/vilão têm PV, EA e anotações escondidos quando a opção global está ligada
@@ -760,15 +776,15 @@
   /* ---------------------------------------------------------
      Modal do personagem
   --------------------------------------------------------- */
-  let curId = null, curSlot = 0, modalReveal = false;
+  let curId = null, curSlot = 0, modalReveal = false, modalOpenedAt = 0;
   const modal = $('modal');
 
   function openModal(id) {
     const t = findToken(id); if (!t) return;
     curId = id;
-    const s = faceSlot(t);
-    curSlot = s >= 0 ? s : 0;
+    curSlot = statusSlot(t);
     modalReveal = false; // dados de NPC sempre abrem ocultos
+    modalOpenedAt = performance.now();
     modal.hidden = false;
     renderModal();
   }
@@ -785,7 +801,7 @@
     $('mBigEmpty').textContent = 'Sem foto';
     const prev = document.querySelector('.m-preview');
     prev.className = 'm-preview st-' + t.status;
-    $('mSlotBadge').textContent = `${curSlot + 1}/3 · ${SLOT_NAMES[curSlot]}`;
+    $('mSlotBadge').textContent = `${curSlot + 1}/${NSLOTS} · ${SLOT_NAMES[curSlot]}`;
     $('mSlotName').textContent = `Foto ${curSlot + 1} — ${SLOT_NAMES[curSlot]}`;
     const isData = (src || '').startsWith('data:');
     $('mSlotSrc').value = isData ? '' : (src || '');
@@ -793,12 +809,12 @@
 
     const onMap = faceSlot(t);
     const th = $('mThumbs'); th.innerHTML = '';
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < NSLOTS; i++) {
       const b = document.createElement('button');
-      b.className = 'thumb' + (i === curSlot ? ' active' : '') + (i === onMap ? ' onmap' : '');
+      b.className = 'thumb' + (i === curSlot ? ' active' : '') + (i === onMap ? ' isface' : '');
       b.title = SLOT_NAMES[i];
       b.innerHTML = t.photos[i] ? `<img src="${escapeHtml(t.photos[i])}" alt="" draggable="false">` : '<span class="empty">＋</span>';
-      b.innerHTML += `<span class="cap">${SLOT_NAMES[i].split(' / ')[0]}</span>`;
+      b.innerHTML += `<span class="cap">${SLOT_SHORT[i]}</span>`;
       const im = b.querySelector('img'); if (im) im.onerror = () => { im.remove(); };
       b.addEventListener('click', () => { curSlot = i; renderModal(true); });
       th.appendChild(b);
@@ -830,11 +846,20 @@
 
   function bindModal() {
     const T = () => findToken(curId);
+    // o toque que abre a ficha gera um "clique fantasma" no celular, que cairia num botão da ficha recém-aberta: ignora cliques logo após abrir
+    modal.addEventListener('click', (e) => { if (performance.now() - modalOpenedAt < 450) { e.stopPropagation(); e.preventDefault(); } }, true);
     $('mClose').addEventListener('click', closeModal);
     $('mDone').addEventListener('click', closeModal);
     modal.addEventListener('pointerdown', (e) => { if (e.target === modal) closeModal(); });
-    $('mPrev').addEventListener('click', () => { curSlot = (curSlot + 2) % 3; renderModal(true); });
-    $('mNext').addEventListener('click', () => { curSlot = (curSlot + 1) % 3; renderModal(true); });
+    $('mPrev').addEventListener('click', () => { curSlot = (curSlot + NSLOTS - 1) % NSLOTS; renderModal(true); });
+    $('mNext').addEventListener('click', () => { curSlot = (curSlot + 1) % NSLOTS; renderModal(true); });
+    // (ignora o "clique fantasma" que o celular dispara logo após abrir a ficha com o toque no token)
+    $('mBigImg').addEventListener('click', () => { const t = T(); if (t && t.photos[curSlot] && performance.now() - modalOpenedAt > 500) openViewer(t.id, curSlot); });
+    $('mFull').addEventListener('click', () => {
+      const t = T(); if (!t) return;
+      if (!t.photos[curSlot]) { toast('Essa posição ainda não tem foto.'); return; }
+      openViewer(t.id, curSlot);
+    });
 
     $('mName').addEventListener('input', (e) => { const t = T(); if (!t) return; t.name = e.target.value || 'Sem nome'; touch(t); });
     $('mHp').addEventListener('input', (e) => { const t = T(); if (!t) return; t.hp = num(e.target.value); touch(t); });
@@ -854,7 +879,7 @@
     $('mStatus').addEventListener('click', (e) => {
       const b = e.target.closest('.st'); const t = T(); if (!b || !t) return;
       t.status = b.dataset.status;
-      if (t.status === 'morto' && t.photos[2]) curSlot = 2;
+      curSlot = statusSlot(t); // a foto grande acompanha o estado
       touch(t); renderModal(true);
     });
 
@@ -869,14 +894,13 @@
     $('mSlotClear').addEventListener('click', () => setSlot(''));
     $('mSlotFile').addEventListener('change', async (e) => {
       const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-      try { setSlot(await fileToDataURL(f, 420, 'image/webp', 0.86)); }
+      try { setSlot(await fileToDataURL(f, curSlot === 0 ? 420 : 1400, 'image/webp', 0.88)); }
       catch (err) { toast('Não foi possível ler essa imagem.'); }
     });
     $('mUseOnMap').addEventListener('click', () => {
       const t = T(); if (!t) return;
       if (!t.photos[curSlot]) { toast('Essa posição ainda não tem foto.'); return; }
       t.photoIndex = curSlot;
-      if (t.status === 'morto' && curSlot !== 2) toast('Obs.: enquanto o estado for "Morto", o mapa mostra a foto 3 (se existir).');
       touch(t); renderModal(true);
     });
 
@@ -890,6 +914,48 @@
       if (!confirm(`Remover "${t.name}" do mapa?`)) return;
       removeToken(t.id); closeModal();
     });
+  }
+
+  // lista de fotos da biblioteca → 4 posições. Formato antigo (até 3: normal, ação, caído) é convertido.
+  function fotos4(l) {
+    if (l.length >= 4) return l.slice(0, 4);
+    return [l[0] || '', l[0] || '', '', l[2] || ''];
+  }
+
+  /* ---------------------------------------------------------
+     Visualizador em tela cheia (para mostrar a imagem grande à mesa)
+  --------------------------------------------------------- */
+  let viewerId = null, viewerSlot = 1;
+  function openViewer(id, slot) {
+    const t = findToken(id); if (!t || !t.photos[slot]) return;
+    viewerId = id; viewerSlot = slot;
+    renderViewer();
+    $('viewer').hidden = false;
+  }
+  function closeViewer() { $('viewer').hidden = true; viewerId = null; }
+  function renderViewer() {
+    const t = findToken(viewerId); if (!t) { closeViewer(); return; }
+    const v = $('viewer');
+    v.className = 'viewer st-' + t.status;
+    $('vImg').src = t.photos[viewerSlot];
+    $('vName').textContent = t.name;
+    $('vSlot').textContent = SLOT_NAMES[viewerSlot];
+    const have = t.photos.filter(Boolean).length;
+    $('vPrev').hidden = $('vNext').hidden = have < 2;
+  }
+  function stepViewer(dir) {
+    const t = findToken(viewerId); if (!t) return;
+    for (let k = 1; k <= NSLOTS; k++) {
+      const i = (viewerSlot + dir * k + NSLOTS * 2) % NSLOTS;
+      if (t.photos[i]) { viewerSlot = i; renderViewer(); return; }
+    }
+  }
+  function bindViewer() {
+    $('vClose').addEventListener('click', closeViewer);
+    $('vPrev').addEventListener('click', (e) => { e.stopPropagation(); stepViewer(-1); });
+    $('vNext').addEventListener('click', (e) => { e.stopPropagation(); stepViewer(+1); });
+    $('viewer').addEventListener('click', (e) => { if (e.target.id === 'viewer' || e.target.id === 'vFig') closeViewer(); });
+    $('vImg').addEventListener('error', () => { toast('Não consegui carregar essa imagem.'); closeViewer(); });
   }
 
   function removeToken(id) {
@@ -1439,8 +1505,8 @@
       const i = e.target.value; e.target.value = '';
       if (i === '') return;
       const p = library.personagens[+i]; if (!p) return;
-      const lista = Array.isArray(p.fotos) ? p.fotos : [];
-      const fotos = await Promise.all([0, 1, 2].map((k) => probeImage(lista[k] || '')));
+      const lista = fotos4(Array.isArray(p.fotos) ? p.fotos : []);
+      const fotos = await Promise.all(lista.map((src) => probeImage(src || '')));
       const t = createToken({
         name: p.nome, photos: fotos, size: p.tamanho || 1,
         hp: p.pv ?? p.pvMax ?? 0, hpMax: p.pvMax ?? p.pv ?? 0, ea: p.ea ?? p.eaMax ?? 0, eaMax: p.eaMax ?? p.ea ?? 0,
@@ -1487,11 +1553,13 @@
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || '');
       if (e.key === 'Escape') {
         if (fxActive) skipFx();
+        else if (!$('viewer').hidden) closeViewer();
         else if (!modal.hidden) closeModal();
         else { ['mapPanel', 'scenePanel', 'dicePanel'].forEach((p) => togglePanel(p, false)); selectObj(null); setRulerMode(false); }
         return;
       }
-      if (typing || !modal.hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (!$('viewer').hidden && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { stepViewer(e.key === 'ArrowLeft' ? -1 : +1); return; }
+      if (typing || !modal.hidden || !$('viewer').hidden || e.ctrlKey || e.metaKey || e.altKey) return;
       switch (e.key) {
         case 'g': case 'G': $('btnGrid').click(); break;
         case 'r': case 'R': $('btnRuler').click(); break;
@@ -1514,7 +1582,7 @@
   --------------------------------------------------------- */
   async function init() {
     load();
-    bindToolbar(); bindMapPanel(); bindModal(); bindScene(); bindObjects(); bindDomains();
+    bindToolbar(); bindMapPanel(); bindModal(); bindScene(); bindObjects(); bindDomains(); bindViewer();
     new ResizeObserver(() => { drawGrid(); drawFx(); }).observe(viewport);
     const tb = $('toolbar');
     const syncTb = () => document.documentElement.style.setProperty('--tb', tb.offsetHeight + 'px');
