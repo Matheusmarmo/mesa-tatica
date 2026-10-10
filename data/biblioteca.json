@@ -9,7 +9,7 @@
       {
       "nome": "Porto",
       "src": "img/mapas/porto.jpeg",
-      "cell": 100,
+      "cell": 70,
       "metrosPorQuadrado": 1.5
     }
   ],
