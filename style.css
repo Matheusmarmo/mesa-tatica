@@ -211,13 +211,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
 .slotbadge { position: absolute; left: 8px; top: 8px; background: #000c; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; z-index: 2; }
 .onmap { position: absolute; right: 8px; bottom: 8px; background: var(--accent); border-radius: 999px; padding: 2px 10px; font-size: 11px; font-weight: 700; z-index: 2; }
 
-.m-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.m-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .thumb { position: relative; aspect-ratio: 1; padding: 0; overflow: hidden; border-radius: 10px; border: 2px solid var(--line); background: #0b0a1a; }
 .thumb.active { border-color: var(--accent); box-shadow: 0 0 0 2px #7c5cff55; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb .empty { color: var(--muted); font-size: 22px; }
 .thumb .cap { position: absolute; left: 0; right: 0; bottom: 0; font-size: 10.5px; text-align: center; background: #000b; padding: 2px 0; }
-.thumb.onmap::after { content: "NO MAPA"; position: absolute; left: 3px; top: 3px; font-size: 9px; font-weight: 800; background: var(--accent); border-radius: 4px; padding: 1px 4px; }
+.thumb.isface::after { content: "NO MAPA"; position: absolute; left: 3px; top: 3px; font-size: 9px; font-weight: 800; background: var(--accent); border-radius: 4px; padding: 1px 4px; }
 
 .m-imgctl { display: flex; flex-direction: column; gap: 8px; }
 .slotname { font-weight: 700; font-size: 13px; }
@@ -402,4 +402,31 @@ button.simples:hover { background: linear-gradient(180deg, #25506f, #173449); bo
 }
 @media (prefers-reduced-motion: reduce) {
   #domFx .fxRings i { animation: none !important; }
+}
+
+/* ---------- 4 fotos: avatar no token (rosto no alto) e visualizador em tela cheia ---------- */
+.token .face img { object-position: 50% 18%; }
+.m-preview img { cursor: zoom-in; }
+.thumb .cap { font-size: 9.5px; }
+
+.viewer {
+  position: fixed; inset: 0; z-index: 120; display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: radial-gradient(ellipse at center, #14102ef5 0%, #04030afa 80%); padding: 14px;
+}
+.viewer.st-bem { --ring: var(--st-bem); } .viewer.st-machucado { --ring: var(--st-machucado); } .viewer.st-morto { --ring: var(--st-morto-ring); }
+.vfig { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: calc(100vw - 150px); max-height: 100%; }
+.vfig img {
+  max-width: 100%; max-height: calc(100vh - 90px); object-fit: contain; border-radius: 14px; background: #0b0a1a;
+  border: 3px solid var(--ring, var(--st-bem)); box-shadow: 0 0 46px var(--ring, var(--st-bem)), 0 18px 70px #000;
+}
+.vfig figcaption { display: flex; align-items: baseline; gap: 12px; color: #fff; }
+.vfig figcaption b { font-size: 22px; letter-spacing: .02em; }
+.vfig figcaption span { color: var(--muted); font-size: 14px; }
+.viewer.st-morto .vfig img { filter: grayscale(.35) brightness(.9); }
+.vnav { width: 48px; height: 84px; padding: 0; font-size: 34px; background: #000a; border-color: #ffffff22; flex: none; }
+.vclose { position: absolute; right: 14px; top: 12px; font-size: 22px; background: #000a; border-radius: 10px; z-index: 2; }
+@media (max-width: 760px) {
+  .vfig { max-width: calc(100vw - 100px); }
+  .vnav { width: 34px; height: 64px; font-size: 26px; }
+  .vfig figcaption { flex-direction: column; align-items: center; gap: 2px; }
 }
