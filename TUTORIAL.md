@@ -19,13 +19,21 @@ vtt-rpg/
     └── personagens/      ← coloque aqui as fotos dos personagens
 ```
 
-Os arquivos de exemplo (`exemplo-rua.svg`, `exemplo-normal.svg` etc.) servem para testar. Pode apagar depois.
+Os arquivos de exemplo (`exemplo-rua.svg`, `exemplo-avatar.svg`, `exemplo-normal.svg` etc.) servem para testar. Pode apagar depois.
 
 ## 2. O que o programa faz
 
 - **Mapa:** grade quadriculada configurável (tamanho da casa, deslocamento, cor, opacidade) com ou sem imagem de fundo. Zoom com a roda do mouse (ou pinça no celular) e movimentação arrastando o fundo.
 - **Tokens:** arrastar e soltar, com encaixe opcional na grade. Botão **＋ Token** para criar e **⇆ Organizar** para reunir todos numa fileira se algum se perder.
-- **Ficha do personagem (clique no token):** galeria de 3 fotos (Normal, Transformação/Ação, Caído/Morto), nome, estado (Bem / Machucado / Morto), PV, EA, tamanho e anotações. O estado muda a borda e o ícone do token no mapa, e quando o estado é **Morto** o token passa a mostrar a foto 3 em preto e branco.
+- **Ficha do personagem (clique no token):** galeria de **4 fotos** por personagem, nome, estado (Bem / Machucado / Morto), PV, EA, tamanho e anotações.
+  - **Avatar:** o ícone redondo do token no mapa (rosto).
+  - **Normal:** a imagem grande do personagem, para mostrar à mesa.
+  - **Machucado:** o personagem ferido.
+  - **Caído:** o personagem caído, sangrando.
+
+  A foto grande da ficha **troca sozinha conforme o estado**: Bem mostra a Normal, Machucado mostra a Machucado e Morto mostra a Caído (se alguma não existir, aparece a mais próxima). O estado também muda a borda e o ícone do token no mapa, que fica em preto e branco quando Morto.
+  - **🖼 Mostrar em tela cheia** (ou clique na imagem grande) abre a foto em tela cheia para todos verem na transmissão. `←` `→` trocam de foto e `Esc` fecha.
+  - Cenas salvas no formato antigo (3 fotos) são convertidas sozinhas: a foto 1 vira Avatar e Normal, e a foto 3 vira Caído.
 - **Salvamento automático** no `localStorage` do navegador: posições, imagens, estados, mapa e zoom.
 
 Extras que adicionei além do que você pediu:
@@ -108,13 +116,15 @@ git push -u origin main
 | O que | Pasta | Exemplo de caminho |
 |---|---|---|
 | Mapas | `img/mapas/` | `img/mapas/coliseu.png` |
-| Fotos de personagens | `img/personagens/` | `img/personagens/kenshin-normal.png` |
+| Fotos de personagens (4 por personagem) | `img/personagens/` | `img/personagens/kenshin-zenin-normal.png` |
 | Objetos | `img/objetos/` | `img/objetos/caixa.png` |
 | Áudios de domínio | `audio/` | `audio/meu-dominio.mp3` |
 
+Tamanho recomendado: **avatar** quadrado de uns 500 px (rosto centralizado, até 200 KB); **normal, machucado e caído** com a mesma proporção da imagem principal e uns 1400 a 2000 px no lado maior (até uns 1 MB cada, em JPG ou WebP).
+
 Regras importantes:
 
-- **Nomes em minúsculas, sem espaços e sem acentos** (use `kenshin-acao.png`, não `Kenshin Ação.PNG`). O GitHub diferencia maiúsculas de minúsculas.
+- **Nomes em minúsculas, sem espaços e sem acentos** (use `kenshin-zenin-machucado.png`, não `Kenshin Machucado.PNG`). O GitHub diferencia maiúsculas de minúsculas.
 - Prefira `.jpg` ou `.webp` para mapas e `.png` ou `.webp` para tokens. Mantenha os mapas abaixo de uns 2 MB para carregar rápido no celular dos jogadores.
 - Para subir mais imagens depois: abra a pasta no GitHub, **Add file → Upload files**, arraste e faça **Commit changes**.
 
@@ -131,9 +141,10 @@ Abra `data/biblioteca.json` no GitHub (ícone do lápis para editar) e adicione 
     {
       "nome": "Kenshin Zenin",
       "fotos": [
-        "img/personagens/kenshin-normal.png",
-        "img/personagens/kenshin-acao.png",
-        "img/personagens/kenshin-caido.png"
+        "img/personagens/kenshin-zenin-avatar.png",
+        "img/personagens/kenshin-zenin-normal.png",
+        "img/personagens/kenshin-zenin-machucado.png",
+        "img/personagens/kenshin-zenin-caido.png"
       ],
       "pvMax": 54,
       "eaMax": 64,
@@ -143,7 +154,7 @@ Abra `data/biblioteca.json` no GitHub (ícone do lápis para editar) e adicione 
 }
 ```
 
-Campos opcionais: `grupo` (agrupa o personagem no menu da biblioteca), `notas` (texto que já vem preenchido nas anotações) e `tamanho` (1 a 4 casas). Se uma foto listada não existir, ela é ignorada, e a mesa também tenta as extensões `.png`, `.jpg`, `.jpeg` e `.webp` sozinha. A lista completa de nomes de arquivo esperados para cada personagem está em `img/personagens/NOMES-DOS-ARQUIVOS.txt`.
+A lista `fotos` tem sempre esta ordem: **avatar, normal, machucado, caído**. Pode deixar um nome vazio (`""`) se ainda não tiver aquela imagem; se o avatar faltar, o token usa a normal. Campos opcionais: `grupo` (agrupa o personagem no menu da biblioteca), `notas` (texto que já vem preenchido nas anotações) e `tamanho` (1 a 4 casas). Se uma foto listada não existir, ela é ignorada, e a mesa também tenta as extensões `.png`, `.jpg`, `.jpeg` e `.webp` sozinha. A lista completa de nomes de arquivo esperados para cada personagem está em `img/personagens/NOMES-DOS-ARQUIVOS.txt`.
 
 Cuidado com as vírgulas: o JSON não aceita vírgula depois do último item de uma lista. Se o menu de biblioteca ficar vazio, o JSON provavelmente tem um erro de vírgula ou aspas (você pode conferir em <https://jsonlint.com>).
 
