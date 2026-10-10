@@ -67,7 +67,6 @@
       </label>
       <label>Imagem do mapa (caminho no repositório ou URL)
         <input id="mapSrc" type="text" placeholder="img/mapas/meu-mapa.png">
-        <input id="mapSrc" type="text" placeholder="img/mapas/Porto.svg">
       </label>
       <div class="row">
         <button id="btnMapApply">Aplicar</button>
@@ -231,6 +230,7 @@
 
         <div class="m-imgctl">
           <div class="slotname" id="mSlotName"></div>
+          <button id="mFull" class="wide" title="Mostra esta imagem em tela cheia (Esc fecha; ← → trocam de foto)">🖼 Mostrar em tela cheia</button>
           <input id="mSlotSrc" type="text" placeholder="caminho (img/personagens/nome.png) ou URL">
           <div class="row">
             <label class="filebtn">Enviar arquivo…<input id="mSlotFile" type="file" accept="image/*"></label>
@@ -291,6 +291,17 @@
         </div>
       </section>
     </div>
+  </div>
+
+  <!-- ============ VISUALIZADOR EM TELA CHEIA ============ -->
+  <div id="viewer" class="viewer" hidden>
+    <button class="close vclose" id="vClose" title="Fechar (Esc)">✕</button>
+    <button class="vnav prev" id="vPrev" title="Foto anterior (←)">‹</button>
+    <figure class="vfig" id="vFig">
+      <img id="vImg" alt="" draggable="false">
+      <figcaption><b id="vName"></b><span id="vSlot"></span></figcaption>
+    </figure>
+    <button class="vnav next" id="vNext" title="Próxima foto (→)">›</button>
   </div>
 
   <!-- ============ CENA DA EXPANSÃO DE DOMÍNIO ============ -->
