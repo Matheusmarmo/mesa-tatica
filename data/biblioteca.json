@@ -9,7 +9,7 @@
    {
       "nome": "Porto",
       "src": "img/mapas/porto.jpeg",
-      "cell": 70,
+      "cell": 110,
       "metrosPorQuadrado": 1.5
     }
  ],
@@ -61,7 +61,7 @@
    "nome": "Souma Shiraishi",
    "grupo": "Aliados e NPCs",
    "fotos": [
-    "img/personagens/souma-shiraishi-avatar.png",
+    "img/personagens/normal/shiro.jpeg",
     "img/personagens/souma-shiraishi-normal.png",
     "img/personagens/souma-shiraishi-machucado.png",
     "img/personagens/souma-shiraishi-caido.png"
@@ -74,7 +74,7 @@
    "nome": "Íris Katsura",
    "grupo": "Aliados e NPCs",
    "fotos": [
-    "img/personagens/iris-katsura-avatar.png",
+    "img/personagens/normal/iris.jpeg",
     "img/personagens/iris-katsura-normal.png",
     "img/personagens/iris-katsura-machucado.png",
     "img/personagens/iris-katsura-caido.png"
@@ -87,7 +87,7 @@
    "nome": "Kaito Shirogane",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/kaito-shirogane-avatar.png",
+    "img/personagens/normal/kaito.jpeg",
     "img/personagens/kaito-shirogane-normal.png",
     "img/personagens/kaito-shirogane-machucado.png",
     "img/personagens/kaito-shirogane-caido.png"
@@ -113,7 +113,7 @@
    "nome": "Goro Akai",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/goro-akai-avatar.png",
+    "img/personagens/normal/goro.jpeg",
     "img/personagens/goro-akai-normal.png",
     "img/personagens/goro-akai-machucado.png",
     "img/personagens/goro-akai-caido.png"
@@ -128,7 +128,7 @@
    "nome": "Leon Amaral",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/leon-amaral-avatar.png",
+    "img/personagens/normal/leon.jpeg",
     "img/personagens/leon-amaral-normal.png",
     "img/personagens/leon-amaral-machucado.png",
     "img/personagens/leon-amaral-caido.png"
@@ -143,7 +143,7 @@
    "nome": "Benimaru Kagurazaka",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/benimaru-kagurazaka-avatar.png",
+    "img/personagens/normal/benimaru.jpeg",
     "img/personagens/benimaru-kagurazaka-normal.png",
     "img/personagens/benimaru-kagurazaka-machucado.png",
     "img/personagens/benimaru-kagurazaka-caido.png"
