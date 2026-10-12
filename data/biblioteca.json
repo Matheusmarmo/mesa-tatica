@@ -18,7 +18,7 @@
    "nome": "Kenshin Zenin",
    "grupo": "Jogadores",
    "fotos": [
-    "img/personagens/kenshin-zenin-avatar.png",
+    "img/personagens/normal/kenshin.jpeg",
     "img/personagens/kenshin-zenin-normal.png",
     "img/personagens/kenshin-zenin-machucado.png",
     "img/personagens/kenshin-zenin-caido.png"
@@ -33,7 +33,7 @@
    "nome": "Reika Akaime",
    "grupo": "Jogadores",
    "fotos": [
-    "img/personagens/reika-akaime-avatar.png",
+    "img/personagens/normal/reika.jpeg",
     "img/personagens/reika-akaime-normal.png",
     "img/personagens/reika-akaime-machucado.png",
     "img/personagens/reika-akaime-caido.png"
@@ -58,7 +58,7 @@
    "tipo": "npc"
   },
   {
-   "nome": "Souma Shiraishi",
+   "nome": "Shiro",
    "grupo": "Aliados e NPCs",
    "fotos": [
     "img/personagens/normal/shiro.jpeg",
@@ -158,7 +158,7 @@
    "nome": "Itsuki Karasuma",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/itsuki-karasuma-avatar.png",
+    "img/personagens/normal/itsuki.jpeg",
     "img/personagens/itsuki-karasuma-normal.png",
     "img/personagens/itsuki-karasuma-machucado.png",
     "img/personagens/itsuki-karasuma-caido.png"
@@ -171,7 +171,7 @@
    "nome": "Sousuke Kanzaki",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/sousuke-kanzaki-avatar.png",
+    "img/personagens/normal/sousuke.jpeg",
     "img/personagens/sousuke-kanzaki-normal.png",
     "img/personagens/sousuke-kanzaki-machucado.png",
     "img/personagens/sousuke-kanzaki-caido.png"
@@ -197,7 +197,7 @@
    "nome": "Gou Reiji",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/gou-reiji-avatar.png",
+    "img/personagens/normal/gou.jpeg",
     "img/personagens/gou-reiji-normal.png",
     "img/personagens/gou-reiji-machucado.png",
     "img/personagens/gou-reiji-caido.png"
@@ -210,7 +210,7 @@
    "nome": "Rei Akashi",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/rei-akashi-avatar.png",
+    "img/personagens/normal/rei.jpeg",
     "img/personagens/rei-akashi-normal.png",
     "img/personagens/rei-akashi-machucado.png",
     "img/personagens/rei-akashi-caido.png"
@@ -223,7 +223,7 @@
    "nome": "Kimura",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/kimura-avatar.png",
+    "img/personagens/normal/kimura.jpeg",
     "img/personagens/kimura-normal.png",
     "img/personagens/kimura-machucado.png",
     "img/personagens/kimura-caido.png"
@@ -236,7 +236,7 @@
    "nome": "Vladir Akasaka",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/vladir-akasaka-avatar.png",
+    "img/personagens/normal/vladir.jpeg",
     "img/personagens/vladir-akasaka-normal.png",
     "img/personagens/vladir-akasaka-machucado.png",
     "img/personagens/vladir-akasaka-caido.png"
@@ -249,7 +249,7 @@
    "nome": "Akito Tsukuyomi",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/akito-tsukuyomi-avatar.png",
+    "img/personagens/noraml/akito.jpeg",
     "img/personagens/akito-tsukuyomi-normal.png",
     "img/personagens/akito-tsukuyomi-machucado.png",
     "img/personagens/akito-tsukuyomi-caido.png"
@@ -262,7 +262,7 @@
    "nome": "Katsuro Sagara",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/katsuro-sagara-avatar.png",
+    "img/personagens/normal/katsuro.jpeg",
     "img/personagens/katsuro-sagara-normal.png",
     "img/personagens/katsuro-sagara-machucado.png",
     "img/personagens/katsuro-sagara-caido.png"
@@ -275,7 +275,7 @@
    "nome": "Kyouma Hakuryuu",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/kyouma-hakuryuu-avatar.png",
+    "img/personagens/normal/kyouma.jpeg",
     "img/personagens/kyouma-hakuryuu-normal.png",
     "img/personagens/kyouma-hakuryuu-machucado.png",
     "img/personagens/kyouma-hakuryuu-caido.png"
@@ -290,8 +290,8 @@
    "nome": "Akane Toudou",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/akane-toudou-avatar.png",
-    "img/personagens/akane-toudou-normal.png",
+    "img/personagens/normal/akane.jpeg",
+    "img/personagens/machucado/akane.jpeg",
     "img/personagens/akane-toudou-machucado.png",
     "img/personagens/akane-toudou-caido.png"
    ],
@@ -305,7 +305,7 @@
    "nome": "Hisae Kamo",
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
-    "img/personagens/hisae-kamo-avatar.png",
+    "img/personagens/normal/hisae.jpeg",
     "img/personagens/hisae-kamo-normal.png",
     "img/personagens/hisae-kamo-machucado.png",
     "img/personagens/hisae-kamo-caido.png"
@@ -320,7 +320,7 @@
    "nome": "Haru Kuroba",
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
-    "img/personagens/haru-kuroba-avatar.png",
+    "img/personagens/normal/haru.jpeg",
     "img/personagens/haru-kuroba-normal.png",
     "img/personagens/haru-kuroba-machucado.png",
     "img/personagens/haru-kuroba-caido.png"
@@ -335,7 +335,7 @@
    "nome": "Yōsuke Iwakura",
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
-    "img/personagens/yosuke-iwakura-avatar.png",
+    "img/personagens/normal/yosuke.jpeg",
     "img/personagens/yosuke-iwakura-normal.png",
     "img/personagens/yosuke-iwakura-machucado.png",
     "img/personagens/yosuke-iwakura-caido.png"
@@ -350,7 +350,7 @@
    "nome": "Kayn",
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
-    "img/personagens/kayn-avatar.png",
+    "img/personagens/normal/kayn.jpeg",
     "img/personagens/kayn-normal.png",
     "img/personagens/kayn-machucado.png",
     "img/personagens/kayn-caido.png"
@@ -374,19 +374,6 @@
    "notas": "Usuário de Maldição · Classe II",
    "pvMax": 240,
    "eaMax": 30,
-   "tipo": "npc"
-  },
-  {
-   "nome": "Anônimo",
-   "grupo": "Maldições",
-   "fotos": [
-    "img/personagens/anonimo-avatar.png",
-    "img/personagens/anonimo-normal.png",
-    "img/personagens/anonimo-machucado.png",
-    "img/personagens/anonimo-caido.png"
-   ],
-   "tamanho": 1,
-   "notas": "Espírito do Esquecimento · Classe Especial",
    "tipo": "npc"
   },
   {
