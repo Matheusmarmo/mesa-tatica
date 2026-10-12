@@ -9,9 +9,45 @@
    {
       "nome": "Porto",
       "src": "img/mapas/porto.jpeg",
-      "cell": 140,
+      "cell": 70,
       "metrosPorQuadrado": 1.5
-    }
+    },
+  {
+      "nome": "Cidade",
+      "src": "img/mapas/cidade.jpeg",
+      "cell": 70,
+      "metrosPorQuadrado": 1.5
+  },
+  {
+      "nome": "Colisseu",
+      "src": "img/mapas/colisseu.jpeg",
+      "cell": 70,
+      "metrosPorQuadrado": 1.5
+  },
+  {
+      "nome": "Comercio",
+      "src": "img/mapas/comercio.jpeg",
+      "cell": 70,
+      "metrosPorQuadrado": 1.5
+  },
+  {
+      "nome": "Praça",
+      "src": "img/mapas/praca.jpeg",
+      "cell": 70,
+      "metrosPorQuadrado": 1.5
+  },
+  {
+      "nome": "Salão",
+      "src": "img/mapas/salao.jpeg",
+      "cell": 70,
+      "metrosPorQuadrado": 1.5
+  },
+  {
+      "nome": "Vestiário",
+      "src": "img/mapas/vestiario.jpeg",
+      "cell": 70,
+      "metrosPorQuadrado": 1.5
+  }
  ],
  "personagens": [
   {
