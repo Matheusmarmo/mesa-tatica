@@ -32,6 +32,8 @@ Os arquivos de exemplo (`exemplo-rua.svg`, `exemplo-avatar.svg`, `exemplo-normal
   - **Caído:** o personagem caído, sangrando.
 
   A foto grande da ficha **troca sozinha conforme o estado**: Bem mostra a Normal, Machucado mostra a Machucado e Morto mostra a Caído (se alguma não existir, aparece a mais próxima). O estado também muda a borda e o ícone do token no mapa, que fica em preto e branco quando Morto.
+
+  **Foto que aparece no token do mapa:** por padrão é o Avatar. Na ficha, abaixo da galeria, o campo **"Foto que aparece no token do mapa"** deixa você escolher outra (Avatar, Normal, Machucado ou Caído) ou a opção **Automática (muda com o estado)**, em que o token mostra o Avatar quando está Bem, a Machucado quando está Machucado e a Caído quando está Morto. A foto escolhida aparece com a etiqueta **NO MAPA** na galeria. Atalho: abra a foto na galeria e clique em **"Usar a foto que estou vendo no token"**. Se a foto escolhida ainda não existir, o token usa a mais próxima.
   - **🖼 Mostrar em tela cheia** (ou clique na imagem grande) abre a foto em tela cheia para todos verem na transmissão. `←` `→` trocam de foto e `Esc` fecha.
   - Cenas salvas no formato antigo (3 fotos) são convertidas sozinhas: a foto 1 vira Avatar e Normal, e a foto 3 vira Caído.
 - **Salvamento automático** no `localStorage` do navegador: posições, imagens, estados, mapa e zoom.
@@ -154,7 +156,7 @@ Abra `data/biblioteca.json` no GitHub (ícone do lápis para editar) e adicione 
 }
 ```
 
-A lista `fotos` tem sempre esta ordem: **avatar, normal, machucado, caído**. Pode deixar um nome vazio (`""`) se ainda não tiver aquela imagem; se o avatar faltar, o token usa a normal. Campos opcionais: `grupo` (agrupa o personagem no menu da biblioteca), `notas` (texto que já vem preenchido nas anotações) e `tamanho` (1 a 4 casas). Se uma foto listada não existir, ela é ignorada, e a mesa também tenta as extensões `.png`, `.jpg`, `.jpeg` e `.webp` sozinha. A lista completa de nomes de arquivo esperados para cada personagem está em `img/personagens/NOMES-DOS-ARQUIVOS.txt`.
+A lista `fotos` tem sempre esta ordem: **avatar, normal, machucado, caído**. Pode deixar um nome vazio (`""`) se ainda não tiver aquela imagem; se o avatar faltar, o token usa a normal. Campos opcionais: `fotoMapa` (qual foto aparece no token ao criar: `"avatar"`, `"normal"`, `"machucado"`, `"caido"` ou `"auto"`; o padrão é `"avatar"`), `grupo` (agrupa o personagem no menu da biblioteca), `notas` (texto que já vem preenchido nas anotações) e `tamanho` (1 a 4 casas). Se uma foto listada não existir, ela é ignorada, e a mesa também tenta as extensões `.png`, `.jpg`, `.jpeg` e `.webp` sozinha. A lista completa de nomes de arquivo esperados para cada personagem está em `img/personagens/NOMES-DOS-ARQUIVOS.txt`.
 
 Cuidado com as vírgulas: o JSON não aceita vírgula depois do último item de uma lista. Se o menu de biblioteca ficar vazio, o JSON provavelmente tem um erro de vírgula ou aspas (você pode conferir em <https://jsonlint.com>).
 
