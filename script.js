@@ -110,7 +110,8 @@
       ea: num(t.ea, 0), eaMax: Math.max(0, num(t.eaMax, 0)),
       color: /^#[0-9a-f]{6}$/i.test(t.color || '') ? t.color : PALETTE[i % PALETTE.length],
       notes: String(t.notes ?? ''),
-      tipo: t.tipo === 'npc' ? 'npc' : 'jogador',
+      // aceita "npc" e também "vilao"/"vilão"/"inimigo" (tudo que não é jogador é NPC/vilão)
+      tipo: ['npc', 'vilao', 'vilão', 'inimigo'].includes(String(t.tipo || '').toLowerCase()) ? 'npc' : 'jogador',
     };
   }
 
@@ -1089,9 +1090,10 @@
 
   // imagem com proporção natural: o lado maior ocupa `maxCasas` casas
   async function addImageObject(src, name, w, h) {
+    // sempre confere se a imagem existe: caminho errado avisa em vez de criar um quadrado com "?"
+    const a = await imageAspect(src);
+    if (!a.ok) { toast('Não encontrei a imagem do objeto: ' + (src.length > 50 ? src.slice(0, 47) + '…' : src) + ' (confira se o arquivo foi enviado ao repositório).', 6000); return null; }
     if (!w || !h) {
-      const a = await imageAspect(src);
-      if (!a.ok) { toast('Não consegui carregar essa imagem: ' + (src.length > 50 ? src.slice(0, 47) + '…' : src), 5000); return null; }
       const long = 2;
       if (a.w >= a.h) { w = long; h = Math.max(0.25, +(long * a.h / a.w).toFixed(2)); } else { h = long; w = Math.max(0.25, +(long * a.w / a.h).toFixed(2)); }
     }
