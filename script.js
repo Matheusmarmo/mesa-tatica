@@ -105,6 +105,7 @@
       size: clamp(Math.round(num(t.size, 1)), 1, 4),
       photos: photos.map((p) => (typeof p === 'string' ? p : '')),
       photoIndex: clamp(photoIndex, 0, NSLOTS - 1),
+      faceMode: t.faceMode === 'auto' ? 'auto' : 'fixed', // 'fixed' = sempre a foto escolhida; 'auto' = muda com o estado
       status: ['bem', 'machucado', 'morto'].includes(t.status) ? t.status : 'bem',
       hp: num(t.hp, 0), hpMax: Math.max(0, num(t.hpMax, 0)),
       ea: num(t.ea, 0), eaMax: Math.max(0, num(t.eaMax, 0)),
@@ -320,7 +321,11 @@
 
   // foto usada no ícone do token: a escolhida (padrão: avatar) e, se faltar, a primeira que existir
   function faceSlot(t) {
-    for (const i of [t.photoIndex, 0, 1, 2, 3]) if (t.photos[i]) return i;
+    let order;
+    if (t.faceMode === 'auto') { // segue o estado: Bem = avatar, Machucado = machucado, Morto = caído
+      order = t.status === 'morto' ? [3, 2, 0, 1] : t.status === 'machucado' ? [2, 0, 1, 3] : [0, 1, 2, 3];
+    } else order = [t.photoIndex, 0, 1, 2, 3];
+    for (const i of order) if (t.photos[i]) return i;
     return -1; // nenhuma
   }
 
@@ -821,6 +826,7 @@
       th.appendChild(b);
     }
     document.querySelectorAll('#mStatus .st').forEach((b) => b.classList.toggle('active', b.dataset.status === t.status));
+    $('mFace').value = t.faceMode === 'auto' ? 'auto' : String(t.photoIndex);
     if (onlyGallery) return;
     $('mName').value = t.name;
     $('mHp').value = t.hp; $('mHpMax').value = t.hpMax;
@@ -901,7 +907,19 @@
     $('mUseOnMap').addEventListener('click', () => {
       const t = T(); if (!t) return;
       if (!t.photos[curSlot]) { toast('Essa posição ainda não tem foto.'); return; }
-      t.photoIndex = curSlot;
+      t.photoIndex = curSlot; t.faceMode = 'fixed';
+      touch(t); renderModal(true);
+      toast(`Token do mapa: ${SLOT_SHORT[curSlot]}.`);
+    });
+    // escolha direta da foto que aparece no token do mapa (ou automática, que acompanha o estado)
+    $('mFace').addEventListener('change', (e) => {
+      const t = T(); if (!t) return;
+      if (e.target.value === 'auto') { t.faceMode = 'auto'; toast('Token do mapa: segue o estado (Bem = avatar, Machucado, Morto = caído).', 4500); }
+      else {
+        const i = +e.target.value;
+        t.faceMode = 'fixed'; t.photoIndex = i;
+        if (!t.photos[i]) toast(`A foto "${SLOT_SHORT[i]}" ainda não existe; o token usa a mais próxima.`, 4500);
+      }
       touch(t); renderModal(true);
     });
 
@@ -1514,6 +1532,9 @@
         hp: p.pv ?? p.pvMax ?? 0, hpMax: p.pvMax ?? p.pv ?? 0, ea: p.ea ?? p.eaMax ?? 0, eaMax: p.eaMax ?? p.ea ?? 0,
         color: p.cor, notes: p.notas || '',
         tipo: p.tipo || (p.grupo === 'Jogadores' ? 'jogador' : 'npc'),
+        // opcional no JSON: "fotoMapa": "avatar" | "normal" | "machucado" | "caido" | "auto"
+        photoIndex: { avatar: 0, normal: 1, machucado: 2, caido: 3, 'caído': 3 }[String(p.fotoMapa || '').toLowerCase()] ?? 0,
+        faceMode: String(p.fotoMapa || '').toLowerCase() === 'auto' ? 'auto' : 'fixed',
       });
       selectToken(t.id);
       toast(`"${t.name}" adicionado ao mapa.`);
