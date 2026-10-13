@@ -21,13 +21,13 @@
   {
    "nome": "Colisseu",
    "src": "img/mapas/colisseu.jpeg",
-   "cell": 70,
+   "cell": 100,
    "metrosPorQuadrado": 1.5
   },
   {
    "nome": "Comercio",
    "src": "img/mapas/comercio.jpeg",
-   "cell": 70,
+   "cell": 90,
    "metrosPorQuadrado": 1.5
   },
   {
@@ -39,13 +39,13 @@
   {
    "nome": "Salão",
    "src": "img/mapas/salao.jpeg",
-   "cell": 70,
+   "cell": 90,
    "metrosPorQuadrado": 1.5
   },
   {
    "nome": "Vestiário",
    "src": "img/mapas/vestiario.jpeg",
-   "cell": 70,
+   "cell": 120,
    "metrosPorQuadrado": 1.5
   }
  ],
