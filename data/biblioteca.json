@@ -6,47 +6,47 @@
    "cell": 70,
    "metrosPorQuadrado": 1.5
   },
-   {
-      "nome": "Porto",
-      "src": "img/mapas/porto.jpeg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
-    },
   {
-      "nome": "Cidade",
-      "src": "img/mapas/cidade.jpeg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
+   "nome": "Porto",
+   "src": "img/mapas/porto.jpeg",
+   "cell": 35,
+   "metrosPorQuadrado": 1.5
   },
   {
-      "nome": "Colisseu",
-      "src": "img/mapas/colisseu.jpeg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
+   "nome": "Cidade",
+   "src": "img/mapas/cidade.jpeg",
+   "cell": 70,
+   "metrosPorQuadrado": 1.5
   },
   {
-      "nome": "Comercio",
-      "src": "img/mapas/comercio.jpeg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
+   "nome": "Colisseu",
+   "src": "img/mapas/colisseu.jpeg",
+   "cell": 70,
+   "metrosPorQuadrado": 1.5
   },
   {
-      "nome": "Praça",
-      "src": "img/mapas/praca.jpeg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
+   "nome": "Comercio",
+   "src": "img/mapas/comercio.jpeg",
+   "cell": 70,
+   "metrosPorQuadrado": 1.5
   },
   {
-      "nome": "Salão",
-      "src": "img/mapas/salao.jpeg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
+   "nome": "Praça",
+   "src": "img/mapas/praca.jpeg",
+   "cell": 70,
+   "metrosPorQuadrado": 1.5
   },
   {
-      "nome": "Vestiário",
-      "src": "img/mapas/vestiario.jpeg",
-      "cell": 70,
-      "metrosPorQuadrado": 1.5
+   "nome": "Salão",
+   "src": "img/mapas/salao.jpeg",
+   "cell": 70,
+   "metrosPorQuadrado": 1.5
+  },
+  {
+   "nome": "Vestiário",
+   "src": "img/mapas/vestiario.jpeg",
+   "cell": 70,
+   "metrosPorQuadrado": 1.5
   }
  ],
  "personagens": [
@@ -55,7 +55,7 @@
    "grupo": "Jogadores",
    "fotos": [
     "img/personagens/normal/kenshin.jpeg",
-    "img/personagens/kenshin-zenin-normal.png",
+    "img/personagens/kenshin-normal.jpeg",
     "img/personagens/kenshin-zenin-machucado.png",
     "img/personagens/kenshin-zenin-caido.png"
    ],
@@ -70,7 +70,7 @@
    "grupo": "Jogadores",
    "fotos": [
     "img/personagens/normal/reika.jpeg",
-    "img/personagens/reika-akaime-normal.png",
+    "img/personagens/reika-normal.jpeg",
     "img/personagens/reika-akaime-machucado.png",
     "img/personagens/reika-akaime-caido.png"
    ],
@@ -136,7 +136,7 @@
    "nome": "Ren Kurosawa",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/ren.jpeg",
+    "img/personagens/normal/ren.jpeg",
     "img/personagens/ren-normal.jpeg",
     "img/personagens/ren-kurosawa-machucado.png",
     "img/personagens/ren-kurosawa-caido.png"
@@ -272,7 +272,7 @@
    "nome": "Akito Tsukuyomi",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/noraml/akito.jpeg",
+    "img/personagens/normal/akito.jpeg",
     "img/personagens/akito-normal.jpeg",
     "img/personagens/akito-tsukuyomi-machucado.png",
     "img/personagens/akito-tsukuyomi-caido.png"
@@ -292,14 +292,14 @@
    ],
    "tamanho": 1,
    "notas": "O Coringa · Classe Especial",
-   "tipo": "vilao"
+   "tipo": "npc"
   },
   {
    "nome": "Kyouma Hakuryuu",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/normal/kyouma.jpeg",
-    "img/personagens/kyouma-normal.png",
+    "img/personagens/normal/kyoma.jpeg",
+    "img/personagens/kyoma-normal.png",
     "img/personagens/kyouma-hakuryuu-machucado.png",
     "img/personagens/kyouma-hakuryuu-caido.png"
    ],
@@ -315,7 +315,7 @@
    "fotos": [
     "img/personagens/normal/akane.jpeg",
     "img/personagens/akane-normal.jpeg",
-    "img/personagens/machucado/akane.jpeg",
+    "img/personagens/machucado/akane-machucado.jpeg",
     "img/personagens/akane-toudou-caido.png"
    ],
    "tamanho": 1,
@@ -388,8 +388,8 @@
    "nome": "Testemunha",
    "grupo": "Maldições",
    "fotos": [
-    "img/personagens/testemunha-avatar.png",
-    "img/personagens/testemunha-normal.png",
+    "img/personagens/normal/testemunha.jpeg",
+    "img/personagens/testemunha-normal.jpeg",
     "img/personagens/testemunha-machucado.png",
     "img/personagens/testemunha-caido.png"
    ],
