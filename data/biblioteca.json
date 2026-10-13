@@ -83,7 +83,7 @@
    "grupo": "Aliados e NPCs",
    "fotos": [
     "img/personagens/normal/suzu.jpeg",
-    "img/personagens/suzu-amano-normal.png",
+    "img/personagens/suzu-normal.png",
     "img/personagens/suzu-amano-machucado.png",
     "img/personagens/suzu-amano-caido.png"
    ],
@@ -98,7 +98,7 @@
    "grupo": "Aliados e NPCs",
    "fotos": [
     "img/personagens/normal/shiro.jpeg",
-    "img/personagens/souma-shiraishi-normal.png",
+    "img/personagens/shiro-normal.jpeg",
     "img/personagens/souma-shiraishi-machucado.png",
     "img/personagens/souma-shiraishi-caido.png"
    ],
@@ -111,7 +111,7 @@
    "grupo": "Aliados e NPCs",
    "fotos": [
     "img/personagens/normal/iris.jpeg",
-    "img/personagens/iris-katsura-normal.png",
+    "img/personagens/iris-normal.jpeg",
     "img/personagens/iris-katsura-machucado.png",
     "img/personagens/iris-katsura-caido.png"
    ],
@@ -124,7 +124,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/kaito.jpeg",
-    "img/personagens/kaito-shirogane-normal.png",
+    "img/personagens/kaito-normal.jpeg",
     "img/personagens/kaito-shirogane-machucado.png",
     "img/personagens/kaito-shirogane-caido.png"
    ],
@@ -136,8 +136,8 @@
    "nome": "Ren Kurosawa",
    "grupo": "Classe Especial",
    "fotos": [
-    "img/personagens/ren-kurosawa-avatar.png",
-    "img/personagens/ren-kurosawa-normal.png",
+    "img/personagens/ren.jpeg",
+    "img/personagens/ren-normal.jpeg",
     "img/personagens/ren-kurosawa-machucado.png",
     "img/personagens/ren-kurosawa-caido.png"
    ],
@@ -150,7 +150,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/goro.jpeg",
-    "img/personagens/goro-akai-normal.png",
+    "img/personagens/goro-normal.jpeg",
     "img/personagens/goro-akai-machucado.png",
     "img/personagens/goro-akai-caido.png"
    ],
@@ -165,7 +165,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/leon.jpeg",
-    "img/personagens/leon-amaral-normal.png",
+    "img/personagens/leon-normal.jpeg",
     "img/personagens/leon-amaral-machucado.png",
     "img/personagens/leon-amaral-caido.png"
    ],
@@ -180,7 +180,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/benimaru.jpeg",
-    "img/personagens/benimaru-kagurazaka-normal.png",
+    "img/personagens/benimaru-normal.jpeg",
     "img/personagens/benimaru-kagurazaka-machucado.png",
     "img/personagens/benimaru-kagurazaka-caido.png"
    ],
@@ -195,7 +195,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/itsuki.jpeg",
-    "img/personagens/itsuki-karasuma-normal.png",
+    "img/personagens/itsuki-normal.jpeg",
     "img/personagens/itsuki-karasuma-machucado.png",
     "img/personagens/itsuki-karasuma-caido.png"
    ],
@@ -208,7 +208,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/sousuke.jpeg",
-    "img/personagens/sousuke-kanzaki-normal.png",
+    "img/personagens/sousuke-normal.jpeg",
     "img/personagens/sousuke-kanzaki-machucado.png",
     "img/personagens/sousuke-kanzaki-caido.png"
    ],
@@ -217,24 +217,11 @@
    "tipo": "npc"
   },
   {
-   "nome": "Toru Kishida",
-   "grupo": "Classe Especial",
-   "fotos": [
-    "img/personagens/toru-kishida-avatar.png",
-    "img/personagens/toru-kishida-normal.png",
-    "img/personagens/toru-kishida-machucado.png",
-    "img/personagens/toru-kishida-caido.png"
-   ],
-   "tamanho": 1,
-   "notas": "O Símbolo Que Ainda Sorri · Classe Especial",
-   "tipo": "npc"
-  },
-  {
    "nome": "Gou Reiji",
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/gou.jpeg",
-    "img/personagens/gou-reiji-normal.png",
+    "img/personagens/gou-normal.jpeg",
     "img/personagens/gou-reiji-machucado.png",
     "img/personagens/gou-reiji-caido.png"
    ],
@@ -247,7 +234,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/rei.jpeg",
-    "img/personagens/rei-akashi-normal.png",
+    "img/personagens/rei-normal.jpeg",
     "img/personagens/rei-akashi-machucado.png",
     "img/personagens/rei-akashi-caido.png"
    ],
@@ -260,7 +247,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/kimura.jpeg",
-    "img/personagens/kimura-normal.png",
+    "img/personagens/kimura-normal.jpeg",
     "img/personagens/kimura-machucado.png",
     "img/personagens/kimura-caido.png"
    ],
@@ -273,7 +260,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/vladir.jpeg",
-    "img/personagens/vladir-akasaka-normal.png",
+    "img/personagens/vladir-normal.jpeg",
     "img/personagens/vladir-akasaka-machucado.png",
     "img/personagens/vladir-akasaka-caido.png"
    ],
@@ -286,7 +273,7 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/noraml/akito.jpeg",
-    "img/personagens/akito-tsukuyomi-normal.png",
+    "img/personagens/akito-normal.jpeg",
     "img/personagens/akito-tsukuyomi-machucado.png",
     "img/personagens/akito-tsukuyomi-caido.png"
    ],
@@ -299,20 +286,20 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/katsuro.jpeg",
-    "img/personagens/katsuro-sagara-normal.png",
+    "img/personagens/katsuro-normal.jpeg",
     "img/personagens/katsuro-sagara-machucado.png",
     "img/personagens/katsuro-sagara-caido.png"
    ],
    "tamanho": 1,
    "notas": "O Coringa · Classe Especial",
-   "tipo": "npc"
+   "tipo": "vilao"
   },
   {
    "nome": "Kyouma Hakuryuu",
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/kyouma.jpeg",
-    "img/personagens/kyouma-hakuryuu-normal.png",
+    "img/personagens/kyouma-normal.png",
     "img/personagens/kyouma-hakuryuu-machucado.png",
     "img/personagens/kyouma-hakuryuu-caido.png"
    ],
@@ -327,8 +314,8 @@
    "grupo": "Classe Especial",
    "fotos": [
     "img/personagens/normal/akane.jpeg",
+    "img/personagens/akane-normal.jpeg",
     "img/personagens/machucado/akane.jpeg",
-    "img/personagens/akane-toudou-machucado.png",
     "img/personagens/akane-toudou-caido.png"
    ],
    "tamanho": 1,
@@ -342,7 +329,7 @@
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
     "img/personagens/normal/hisae.jpeg",
-    "img/personagens/hisae-kamo-normal.png",
+    "img/personagens/hisae-normal.png",
     "img/personagens/hisae-kamo-machucado.png",
     "img/personagens/hisae-kamo-caido.png"
    ],
@@ -357,7 +344,7 @@
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
     "img/personagens/normal/haru.jpeg",
-    "img/personagens/haru-kuroba-normal.png",
+    "img/personagens/haru-normal.png",
     "img/personagens/haru-kuroba-machucado.png",
     "img/personagens/haru-kuroba-caido.png"
    ],
@@ -372,7 +359,7 @@
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
     "img/personagens/normal/yosuke.jpeg",
-    "img/personagens/yosuke-iwakura-normal.png",
+    "img/personagens/yosuke-normal.png",
     "img/personagens/yosuke-iwakura-machucado.png",
     "img/personagens/yosuke-iwakura-caido.png"
    ],
@@ -387,7 +374,7 @@
    "grupo": "Feiticeiros e vilões (Classe I e II)",
    "fotos": [
     "img/personagens/normal/kayn.jpeg",
-    "img/personagens/kayn-normal.png",
+    "img/personagens/kayn-normal.jpeg",
     "img/personagens/kayn-machucado.png",
     "img/personagens/kayn-caido.png"
    ],
@@ -395,34 +382,6 @@
    "notas": "Três Armas, Mil Rostos · Jogo do Abate · Classe II",
    "pvMax": 300,
    "eaMax": 46,
-   "tipo": "npc"
-  },
-  {
-   "nome": "Renzo Abe",
-   "grupo": "Feiticeiros e vilões (Classe I e II)",
-   "fotos": [
-    "img/personagens/renzo-abe-avatar.png",
-    "img/personagens/renzo-abe-normal.png",
-    "img/personagens/renzo-abe-machucado.png",
-    "img/personagens/renzo-abe-caido.png"
-   ],
-   "tamanho": 1,
-   "notas": "Usuário de Maldição · Classe II",
-   "pvMax": 240,
-   "eaMax": 30,
-   "tipo": "npc"
-  },
-  {
-   "nome": "Profundis",
-   "grupo": "Maldições",
-   "fotos": [
-    "img/personagens/profundis-avatar.png",
-    "img/personagens/profundis-normal.png",
-    "img/personagens/profundis-machucado.png",
-    "img/personagens/profundis-caido.png"
-   ],
-   "tamanho": 3,
-   "notas": "Espírito do Abismo · Classe Especial",
    "tipo": "npc"
   },
   {
@@ -436,32 +395,6 @@
    ],
    "tamanho": 1,
    "notas": "Espírito do Julgamento · Classe Especial",
-   "tipo": "npc"
-  },
-  {
-   "nome": "Talião",
-   "grupo": "Maldições",
-   "fotos": [
-    "img/personagens/taliao-avatar.png",
-    "img/personagens/taliao-normal.png",
-    "img/personagens/taliao-machucado.png",
-    "img/personagens/taliao-caido.png"
-   ],
-   "tamanho": 1,
-   "notas": "Espírito da Vingança Desproporcional · Classe I",
-   "tipo": "npc"
-  },
-  {
-   "nome": "Ninho",
-   "grupo": "Maldições",
-   "fotos": [
-    "img/personagens/ninho-avatar.png",
-    "img/personagens/ninho-normal.png",
-    "img/personagens/ninho-machucado.png",
-    "img/personagens/ninho-caido.png"
-   ],
-   "tamanho": 1,
-   "notas": "Espírito do Enxame · Classe I",
    "tipo": "npc"
   }
  ],
