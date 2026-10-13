@@ -236,7 +236,16 @@
             <label class="filebtn">Enviar arquivo…<input id="mSlotFile" type="file" accept="image/*"></label>
             <button id="mSlotClear">Remover foto</button>
           </div>
-          <button id="mUseOnMap" class="wide">Usar esta foto no token do mapa</button>
+          <label>Foto que aparece no token do mapa
+            <select id="mFace">
+              <option value="0">Avatar (padrão)</option>
+              <option value="1">Normal</option>
+              <option value="2">Machucado</option>
+              <option value="3">Caído</option>
+              <option value="auto">Automática (muda com o estado)</option>
+            </select>
+          </label>
+          <button id="mUseOnMap" class="wide">Usar a foto que estou vendo no token</button>
         </div>
       </section>
 
