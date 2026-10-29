@@ -50,6 +50,22 @@
     }
   ],
   "personagens": [
+    
+    {
+      "nome": "Sem nome",
+      "grupo": "Jogadores",
+      "fotos": [
+        "img/personagens/normal/",
+        "",
+        "img/personagens/machucado/",
+        "img/personagens/caido/"
+      ],
+      "tamanho": 1,
+      "notas": "Classe Especial",
+      "pvMax": 88888,
+      "eaMax": 8888,
+      "tipo": "jogador"
+    },
     {
       "nome": "Kenshin Zenin",
       "grupo": "Jogadores",
